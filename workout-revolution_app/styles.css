@@ -72,3 +72,8 @@ button.set-row.done{width:100%;background:#fff;border:0;border-top:1px solid var
 body:has(#modal-root .modal-backdrop) .toast{bottom:auto;top:calc(16px + env(safe-area-inset-top,0px))}
 /* Installed app: keep content out from under the phone's clock/battery bar */
 @media (display-mode: standalone){body{padding-top:env(safe-area-inset-top,0px)}body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--paper);z-index:400}}
+/* Warm-up rows: lighter than working sets */
+button.set-row.warm{width:100%;background:#fafbf7;border:0;border-top:1px solid var(--line);text-align:left;font:inherit;color:inherit;cursor:pointer}button.set-row.warm:first-child{border-top:0}
+.set-row.warm .set-no,.set-row.warm-summary .set-no{background:#fff3d9;color:#93712b;font-size:11px}.set-row.warm .set-val{font-size:15px;color:#5c6a60}.set-row.warm.done .set-no{background:#f2d58f;color:var(--ink)}.set-row.warm.done .set-val{text-decoration:line-through;text-decoration-color:#b9c2b7}
+.set-row.warm-summary{background:#fafbf7}.set-row.warm-summary .set-val{font-size:14px;color:#5c6a60}
+.set-row{grid-template-columns:34px 76px minmax(0,1fr) auto}.set-label{white-space:nowrap}@media(max-width:720px){.set-row{grid-template-columns:30px 70px minmax(0,1fr) auto}}

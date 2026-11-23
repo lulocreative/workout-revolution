@@ -65,3 +65,8 @@ html,body{overscroll-behavior-y:none}
 .video-credit{font-size:11px;color:var(--muted);margin-top:7px}.video-credit a,.video-swap a{color:var(--green);font-weight:700}
 .video-swap{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}.video-swap summary{cursor:pointer;font-size:12px;font-weight:700;color:var(--muted);list-style:none}.video-swap summary::-webkit-details-marker{display:none}.video-swap .video-form{margin-top:10px}.video-swap p{margin-top:8px}
 .exercise-head{align-items:center}.video-jump{flex-shrink:0}.video-jump .icon{fill:currentColor}
+/* Logged sets are tappable to fix or delete */
+button.set-row.done{width:100%;background:#fff;border:0;border-top:1px solid var(--line);text-align:left;font:inherit;color:inherit;cursor:pointer}button.set-row.done:first-child{border-top:0}button.set-row.done:active{background:#f3f6ee}
+.set-meta{display:flex;align-items:center;gap:8px;justify-content:flex-end}.set-edit{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted)}.set-edit .icon{width:15px;height:15px}
+#edit-set-form .set-inputs{margin-top:18px}
+body:has(#modal-root .modal-backdrop) .toast{bottom:auto;top:calc(16px + env(safe-area-inset-top,0px))}

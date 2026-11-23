@@ -1,9 +1,11 @@
 // Exercise technique guides. Keyed by exercise id from data/seed.js.
-// `video` is a search phrase: the app opens a YouTube search only when the user taps "Watch demo"
+// `videoId` is a YouTube form tutorial checked on 23 Nov 2026 to be public and embeddable; it plays inside the app
+// via youtube-nocookie.com only after the user taps play. `video` is a search phrase: the app opens a YouTube search only when the user taps "Watch demo"
 // (nothing remote is loaded otherwise). A user-saved link in state.videoLinks takes precedence.
 // Breathing cues deliberately avoid long breath-holds.
 export const TECHNIQUE = {
   'incline-db': {
+    videoId: 'hChjZQhX1Ls', videoBy: 'Scott Herman Fitness',
     target: 'Upper chest, front delts, triceps',
     setup: ['Set the bench to 25–30°, not steeper, so the chest stays the main driver.', 'Sit with dumbbells on your thighs, then kick them up one at a time as you lie back.', 'Feet flat, slight arch, shoulder blades pulled back and down into the bench.'],
     steps: ['Start with dumbbells over the upper chest, wrists stacked over elbows.', 'Lower under control (about 2–3 s) until the dumbbells are level with the chest and elbows sit roughly 45–60° from the torso.', 'Press up and slightly inward, finishing over the shoulders without clanking the bells together.', 'Keep shoulder blades pinned for every rep.'],
@@ -12,6 +14,7 @@ export const TECHNIQUE = {
     video: 'incline dumbbell press proper form'
   },
   'cable-fly': {
+    videoId: '8Um35Es-ROE', videoBy: 'Scott Herman Fitness',
     target: 'Lower and mid chest',
     setup: ['Set both pulleys high, above shoulder height.', 'Grab a handle in each hand and take one step forward into a split stance.', 'Slight bend in the elbows, chest up, shoulders down.'],
     steps: ['From arms wide, bring the hands down and together in an arc toward the lower chest.', 'Keep the elbow angle fixed; the movement happens at the shoulder.', 'Squeeze the chest for a moment where the hands meet, around belly-button to lower-chest height.', 'Return slowly until you feel a stretch across the chest, not in the front of the shoulder.'],
@@ -21,6 +24,7 @@ export const TECHNIQUE = {
     video: 'high to low cable fly form'
   },
   'flat-db': {
+    videoId: '5Y3VZsLb1Ys', videoBy: 'Jack Hanrahan Fitness',
     target: 'Mid chest, front delts, triceps',
     setup: ['Lie on a flat bench with the dumbbells kicked up from your thighs.', 'Feet planted, shoulder blades squeezed back and down.'],
     steps: ['Start with the dumbbells over the chest, palms forward or slightly turned in.', 'Lower slowly with elbows 30–60° from the torso until the dumbbells reach chest level.', 'Press back up over the chest, keeping the wrists straight.'],
@@ -29,6 +33,7 @@ export const TECHNIQUE = {
     video: 'flat dumbbell bench press proper form'
   },
   'lateral-cable': {
+    videoId: 'qitQHqNZbeM', videoBy: 'Colossus Fitness',
     target: 'Side delts',
     setup: ['Set a single pulley at its lowest point with a D-handle.', 'Stand side-on to the machine and grab the handle with the far hand, so the cable crosses in front of your body.', 'Hold the machine with the other hand and lean slightly away if you like.'],
     steps: ['With a soft bend in the elbow, raise the arm out to the side.', 'Lead with the elbow, not the hand, and stop at about shoulder height.', 'Pause briefly, then lower slowly with the cable keeping tension at the bottom.'],
@@ -37,6 +42,7 @@ export const TECHNIQUE = {
     video: 'cable lateral raise proper form'
   },
   'v-pushdown': {
+    videoId: 'FBtU9YjiBLs', videoBy: 'Dale Wallace',
     target: 'Triceps',
     setup: ['Set the pulley high and attach the V-handle.', 'Stand close, soft knees, slight forward lean from the hips.', 'Pin your elbows to your sides.'],
     steps: ['Start with the forearms about parallel to the floor.', 'Push the handle down until the arms are fully straight; squeeze the triceps.', 'Let it come back up under control to forearms-parallel, keeping elbows still.'],
@@ -45,6 +51,7 @@ export const TECHNIQUE = {
     video: 'v bar tricep pushdown proper form'
   },
   'oh-triceps': {
+    videoId: 'GzmlxvSFE7A', videoBy: 'Colossus Fitness',
     target: 'Triceps (long head)',
     setup: ['Set the pulley high and attach the rope.', 'Face away from the machine, holding the rope behind your head, and step forward into a staggered stance.', 'Lean forward slightly with elbows pointing forward, beside your head.'],
     steps: ['Extend the elbows to push the rope forward and up until the arms are straight.', 'Separate the rope ends gently at the finish.', 'Return slowly, letting the hands come behind the head for a deep stretch.', 'Upper arms stay still throughout.'],
@@ -53,6 +60,7 @@ export const TECHNIQUE = {
     video: 'overhead cable tricep extension rope form'
   },
   'ez-curl': {
+    videoId: 'opFVuRi_3b8', videoBy: 'Renaissance Periodization',
     target: 'Biceps',
     setup: ['Set the pulley at its lowest position with an EZ-bar attachment.', 'Stand tall close to the stack, holding the angled part of the bar with palms up.'],
     steps: ['Curl the bar toward the shoulders while the elbows stay by your sides.', 'Squeeze at the top without letting the elbows travel forward.', 'Lower fully under control.'],
@@ -61,6 +69,7 @@ export const TECHNIQUE = {
     video: 'cable ez bar curl proper form'
   },
   'lat-pd': {
+    videoId: 'SALxEARiMkw', videoBy: 'ATHLEAN-X',
     target: 'Lats, upper back, biceps',
     setup: ['Adjust the thigh pad so your legs are locked in.', 'Take a grip slightly wider than shoulders.', 'Sit tall with a small lean back (about 10–15°).'],
     steps: ['Start the rep by pulling the shoulder blades down.', 'Drive the elbows down toward your ribs, bringing the bar to the upper chest.', 'Pause briefly, then let the bar rise slowly until the arms are straight and the lats stretch.'],
@@ -70,6 +79,7 @@ export const TECHNIQUE = {
     video: 'lat pulldown proper form'
   },
   'seated-row': {
+    videoId: '7BkgqzC6WsM', videoBy: 'Colossus Fitness',
     target: 'Mid back, lats, rear delts',
     setup: ['Sit with feet on the platform and knees slightly bent.', 'Grab the neutral handle with a tall chest and straight back.'],
     steps: ['Pull the handle toward your lower ribs, driving the elbows back past the torso.', 'Squeeze the shoulder blades together at the end.', 'Return slowly, letting the shoulder blades move forward without rounding the lower back.'],
@@ -78,6 +88,7 @@ export const TECHNIQUE = {
     video: 'seated cable row proper form'
   },
   'reverse-pec': {
+    videoId: 'dC7jhEk-29A', videoBy: 'Colossus Fitness',
     target: 'Rear delts, upper back',
     setup: ['Face the pad; set the handles so your arms are at shoulder height.', 'Adjust the seat so the handles line up with your shoulders.', 'Chest against the pad.'],
     steps: ['With a soft bend in the elbows, open the arms out and back in a wide arc.', 'Stop when the arms are in line with the body.', 'Return slowly without letting the stack touch down.'],
@@ -86,6 +97,7 @@ export const TECHNIQUE = {
     video: 'reverse pec deck rear delt fly proper form'
   },
   'smith-shrug': {
+    videoId: 'LI3b05LUdpA', videoBy: 'Colossus Fitness',
     target: 'Upper traps',
     setup: ['Set the Smith bar at about mid-thigh height.', 'Stand close with an overhand grip just outside the thighs.', 'Unrack and stand tall with arms straight.'],
     steps: ['Shrug the shoulders straight up toward the ears and slightly back.', 'Hold the top for about 1 second.', 'Lower slowly to a full stretch.'],
@@ -94,6 +106,7 @@ export const TECHNIQUE = {
     video: 'smith machine shrug proper form'
   },
   'incline-curl': {
+    videoId: 'DCe8f6vMe9A', videoBy: 'ATHLEAN-X',
     target: 'Biceps (long head, stretched position)',
     setup: ['Set an adjustable bench to about 45–60°.', 'Sit back with a dumbbell in each hand and let the arms hang straight down, slightly behind the torso.'],
     steps: ['Curl the dumbbells up while the upper arms stay still and behind the body.', 'Turn the palms up fully at the top.', 'Lower slowly all the way to a full stretch.'],
@@ -102,6 +115,7 @@ export const TECHNIQUE = {
     video: 'incline dumbbell curl proper form'
   },
   'preacher-db': {
+    videoId: 'rqfcNmxJQ7k', videoBy: 'Hunter Labrada',
     target: 'Biceps (short head, shortened position)',
     setup: ['Set a preacher pad or incline bench so the back of your upper arm rests flat on it.', 'Armpit snug against the top of the pad.'],
     steps: ['Curl the dumbbell up while the upper arm stays on the pad.', 'Squeeze at the top without letting the elbow lift.', 'Lower slowly, stopping just short of fully locking the elbow.'],
@@ -110,6 +124,7 @@ export const TECHNIQUE = {
     video: 'dumbbell preacher curl proper form'
   },
   'hammer-db': {
+    videoId: 'FNvndC4Ov04', videoBy: 'Physique Development',
     target: 'Brachialis, forearms, biceps',
     setup: ['Stand tall with a dumbbell in each hand, palms facing each other (thumbs up).'],
     steps: ['Curl the dumbbells up, keeping thumbs up and elbows near the ribs.', 'Bring the dumbbells to shoulder height.', 'Lower slowly to full extension.'],
@@ -118,6 +133,7 @@ export const TECHNIQUE = {
     video: 'hammer curl proper form'
   },
   'reverse-curl': {
+    videoId: '23-WiuDnsZ0', videoBy: 'James Harrison',
     target: 'Forearm extensors, brachioradialis',
     setup: ['Set the pulley low with an EZ or straight bar.', 'Grip overhand (palms down) about shoulder width.'],
     steps: ['Curl the bar up with the wrists kept straight and in line with the forearms.', 'Elbows stay by your sides.', 'Lower slowly.'],
@@ -126,6 +142,7 @@ export const TECHNIQUE = {
     video: 'reverse grip cable curl proper form'
   },
   'leg-press': {
+    videoId: 'K5n2vg3oZa4', videoBy: 'Colossus Fitness',
     target: 'Quads, glutes',
     setup: ['Sit fully back with the lower back and hips flat against the pad.', 'Feet shoulder width, mid-platform.', 'Release the safety handles only once you are in position.'],
     steps: ['Lower the sled under control until the knees reach about 90°, or as deep as you can go without the lower back lifting off the pad.', 'Push through the whole foot to press the sled back up.', 'Stop just short of locking the knees.'],
@@ -134,6 +151,7 @@ export const TECHNIQUE = {
     video: '45 degree leg press proper form'
   },
   'lying-curl': {
+    videoId: 'vl5nUdE9mWM', videoBy: 'Physique Development',
     target: 'Hamstrings',
     setup: ['Lie face down with the pad just above the heels, below the calves.', 'Knees just off the end of the bench.', 'Hold the handles.'],
     steps: ['Curl the heels toward the glutes while hips stay pressed into the bench.', 'Squeeze at the top.', 'Lower slowly to almost straight legs.'],
@@ -143,6 +161,7 @@ export const TECHNIQUE = {
     video: 'lying leg curl proper form'
   },
   'leg-extension': {
+    videoId: 'swZQC689o9U', videoBy: 'David Duncan',
     target: 'Quads',
     setup: ['Adjust the back pad so your knees line up with the machine pivot.', 'Ankle pad on the lower shin, just above the feet.', 'Hold the side handles.'],
     steps: ['Straighten the knees smoothly to raise the pad.', 'Squeeze the quads at the top for a moment without slamming into lockout.', 'Lower slowly.'],
@@ -151,6 +170,7 @@ export const TECHNIQUE = {
     video: 'leg extension machine proper form'
   },
   'back-extension': {
+    videoId: 'cFNs7A3_oeI', videoBy: 'Yunus Barisik',
     target: 'Lower back, glutes, hamstrings',
     setup: ['Set the pad just below the hip bones so you can hinge freely.', 'Heels secured under the foot pads.', 'Hold a plate across your chest.'],
     steps: ['Hinge forward at the hips with a flat back.', 'Rise up by squeezing the glutes until the body forms a straight line.', 'Stop there; do not lean back past straight.'],
@@ -159,6 +179,7 @@ export const TECHNIQUE = {
     video: 'roman chair back extension proper form'
   },
   'calf-press': {
+    videoId: 'PYZY00hI43w', videoBy: 'Colossus Fitness',
     target: 'Calves',
     setup: ['Sit in the 45° sled and place the balls of your feet on the lower edge of the platform, heels hanging off.', 'Legs nearly straight with a soft knee.', 'Keep the safety catches set.'],
     steps: ['Push through the balls of the feet to point the toes and raise the sled.', 'Pause at the top.', 'Lower slowly into a deep stretch, heels below toes.'],
@@ -169,3 +190,17 @@ export const TECHNIQUE = {
 };
 export const youtubeSearch = (q) => `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
 export const isSafeVideoUrl = (u) => { try { const x = new URL(String(u)); return x.protocol === 'https:'; } catch { return false; } };
+// Accepts youtube.com/watch?v=, youtu.be/, /shorts/, /embed/, /live/ links; returns the 11-char id or null.
+export const youtubeId = (u) => {
+  try {
+    const x = new URL(String(u)); const h = x.hostname.replace(/^www\.|^m\./, '');
+    let id = null;
+    if (h === 'youtu.be') id = x.pathname.slice(1).split('/')[0];
+    else if (h === 'youtube.com' || h === 'youtube-nocookie.com' || h === 'music.youtube.com') {
+      id = x.searchParams.get('v') || (x.pathname.match(/^\/(?:shorts|embed|live|v)\/([^/?#]+)/) || [])[1] || null;
+    }
+    return id && /^[A-Za-z0-9_-]{11}$/.test(id) ? id : null;
+  } catch { return null; }
+};
+export const youtubeEmbed = (id) => `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0&modestbranding=1`;
+export const youtubeWatch = (id) => `https://www.youtube.com/watch?v=${id}`;

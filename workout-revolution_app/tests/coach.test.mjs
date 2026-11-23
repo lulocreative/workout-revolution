@@ -32,3 +32,6 @@ test('coach proposals are validated against the real program',()=>{const ok=vali
  assert.equal(validateProposal({workout:'push',exerciseId:'flat-db',sets:3,reason:'meh'},PROGRAM).ok,false);
  assert.equal(validateProposal({workout:'push',exerciseId:'flat-db',sets:2,reason:'same as current count'},PROGRAM).ok,false)});
 test('system prompt carries the safety rules and the data',()=>{const p=buildSystemPrompt({todayOslo:'2026-11-23'});assert.match(p,/Romanian deadlifts/);assert.match(p,/dizziness/);assert.match(p,/2026-11-23/)});
+import {nextWorkout} from '../lib/coach.js';
+test('rotation is pull -> legs -> push and starts with pull',()=>{const h=t=>[{date:'2026-11-20',type:t}];assert.equal(nextWorkout([]),'pull');assert.equal(nextWorkout(h('pull')),'legs');assert.equal(nextWorkout(h('legs')),'push');assert.equal(nextWorkout(h('push')),'pull')});
+test('optional focus day does not reset the rotation',()=>{assert.equal(nextWorkout([{date:'2026-11-18',type:'pull'},{date:'2026-11-20',type:'focus'}]),'legs')});

@@ -37,3 +37,8 @@
 .side-log{display:flex;flex-direction:column;gap:12px;max-height:50vh;overflow-y:auto;margin-top:16px;padding:4px 2px}.msg-meta{font-size:10px;color:var(--muted);margin-top:4px}
 @media(max-width:980px){.side-coach-fab{bottom:calc(84px + env(safe-area-inset-bottom,0px));right:14px;padding:13px 16px}}
 @media(max-width:720px){.modal-backdrop.sheet{align-items:flex-end;padding:0}.modal-backdrop.sheet .modal{border-radius:22px 22px 0 0;max-height:88vh}.side-log{max-height:46vh}}
+/* Keep the mobile menu pinned: no rubber-band bounce dragging fixed bars around in Safari, and its own compositing layer so it doesn't lag while scrolling. */
+html,body{overscroll-behavior-y:none}
+@media(max-width:980px){.bottom-nav,.side-coach-fab{transform:translateZ(0);-webkit-transform:translateZ(0);will-change:transform}}
+/* Installed home-screen app: no Safari toolbar, so sit flush on the bottom edge with only the home-indicator gap. */
+@media(display-mode:standalone) and (max-width:980px){.bottom-nav{bottom:0;padding-bottom:max(8px,env(safe-area-inset-bottom,0px));height:auto;min-height:calc(60px + env(safe-area-inset-bottom,0px))}}

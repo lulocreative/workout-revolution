@@ -43,3 +43,7 @@ All loads are in kilograms. Per-hand/per-side units appear in the program and lo
 ## Technique illustrations
 
 The 20 images in `assets/technique/` were AI-generated with Higgsfield (gpt_image_2_6) on 23 Nov 2026 as simple start/finish movement guides. They are illustrations, not photos of the athlete or the gym equipment; the written cues in `data/technique.js` take precedence.
+
+## Form videos
+
+Each exercise links one public YouTube form tutorial (`videoId` in `data/technique.js`), chosen on 23 Nov 2026 and checked to be public and embeddable via YouTube oEmbed. Videos are not stored in the app; they stream from youtube-nocookie.com only after the user taps play.

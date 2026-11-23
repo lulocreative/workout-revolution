@@ -35,3 +35,6 @@ test('system prompt carries the safety rules and the data',()=>{const p=buildSys
 import {nextWorkout} from '../lib/coach.js';
 test('rotation is pull -> legs -> push and starts with pull',()=>{const h=t=>[{date:'2026-11-20',type:t}];assert.equal(nextWorkout([]),'pull');assert.equal(nextWorkout(h('pull')),'legs');assert.equal(nextWorkout(h('legs')),'push');assert.equal(nextWorkout(h('push')),'pull')});
 test('optional focus day does not reset the rotation',()=>{assert.equal(nextWorkout([{date:'2026-11-18',type:'pull'},{date:'2026-11-20',type:'focus'}]),'legs')});
+import {youtubeId} from '../data/technique.js';
+test('YouTube links of every common shape resolve to a video id',()=>{for(const u of ['https://www.youtube.com/watch?v=hChjZQhX1Ls','https://youtu.be/hChjZQhX1Ls?t=30','https://m.youtube.com/watch?v=hChjZQhX1Ls&list=x','https://www.youtube.com/shorts/hChjZQhX1Ls','https://www.youtube.com/embed/hChjZQhX1Ls'])assert.equal(youtubeId(u),'hChjZQhX1Ls',u);for(const u of ['https://vimeo.com/123','not a url','https://youtube.com/watch?v=bad"id'])assert.equal(youtubeId(u),null,u)});
+test('every exercise has an embeddable default form video',()=>{for(const [id,t] of Object.entries(TECHNIQUE))assert.match(t.videoId||'',/^[A-Za-z0-9_-]{11}$/,id)});

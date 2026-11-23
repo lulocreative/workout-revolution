@@ -20,3 +20,15 @@ test('three complete comparable stalled sessions trigger review, not a novelty s
  const h=['2026-11-09','2026-11-13','2026-11-17'].map((date,i)=>({id:String(i),date,source:'recorded',exercises:[{exerciseId:'test',machineId:'machine-a',plannedSets:2,sets:[{weight:20,reps:8,rir:2},{weight:20,reps:8,rir:2}]}]}));
  const r=recommend(exercise,h);assert.equal(r.action,'plateau');assert.equal(r.sets[0].weight,20)
 });
+import {TECHNIQUE,isSafeVideoUrl} from '../data/technique.js';
+test('every programmed exercise has a technique guide',()=>{for(const p of Object.values(PROGRAM))for(const e of [...p.exercises,...(p.bonus||[])]){const t=TECHNIQUE[e.id];assert.ok(t,`missing guide: ${e.id}`);for(const k of ['setup','steps','mistakes'])assert.ok(t[k].length>0,`${e.id}.${k}`);assert.ok(t.breathing&&t.video,e.id)}});
+test('only https video links are accepted',()=>{assert.equal(isSafeVideoUrl('https://youtu.be/x'),true);assert.equal(isSafeVideoUrl('javascript:alert(1)'),false);assert.equal(isSafeVideoUrl('http://x.com'),false)});
+import {parseProposal,validateProposal,buildSystemPrompt} from '../lib/ai.js';
+test('coach proposal is parsed out of the reply text',()=>{const r=parseProposal('Add a set.\n```proposal\n{"workout":"push","exerciseId":"flat-db","sets":3,"reason":"Top of range for 3 sessions"}\n```');assert.equal(r.text,'Add a set.');assert.equal(r.proposal.exerciseId,'flat-db')});
+test('reply without proposal or with broken JSON yields no proposal',()=>{assert.equal(parseProposal('Just advice').proposal,null);assert.equal(parseProposal('x ```proposal\n{bad json}\n```').proposal,null)});
+test('coach proposals are validated against the real program',()=>{const ok=validateProposal({workout:'push',exerciseId:'flat-db',sets:3,reason:'Cleared the rep range twice'},PROGRAM);assert.equal(ok.ok,true);assert.equal(ok.oldCount,2);assert.equal(ok.newCount,3);
+ assert.equal(validateProposal({workout:'push',exerciseId:'lat-pd',sets:3,reason:'wrong day for this lift'},PROGRAM).ok,false);
+ assert.equal(validateProposal({workout:'push',exerciseId:'flat-db',sets:9,reason:'way too many sets here'},PROGRAM).ok,false);
+ assert.equal(validateProposal({workout:'push',exerciseId:'flat-db',sets:3,reason:'meh'},PROGRAM).ok,false);
+ assert.equal(validateProposal({workout:'push',exerciseId:'flat-db',sets:2,reason:'same as current count'},PROGRAM).ok,false)});
+test('system prompt carries the safety rules and the data',()=>{const p=buildSystemPrompt({todayOslo:'2026-11-23'});assert.match(p,/Romanian deadlifts/);assert.match(p,/dizziness/);assert.match(p,/2026-11-23/)});

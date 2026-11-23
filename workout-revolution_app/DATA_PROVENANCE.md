@@ -39,3 +39,7 @@ All loads are in kilograms. Per-hand/per-side units appear in the program and lo
 - New preacher/incline dumbbell curls are experimental technique choices; exact effective weights remain unconfirmed.
 - Some setup-specific proposals (Smith shrugs 20 kg/side, calf press 150 kg total sled, seated leg extension 45/50 kg) are provisional and should be recalibrated using actual completed sets.
 - Rest targets are prescriptions. Actual rest times are logged only when personally entered; the app must never silently call prescribed rest an observed fact.
+
+## Technique illustrations
+
+The 20 images in `assets/technique/` were AI-generated with Higgsfield (gpt_image_2_6) on 23 Nov 2026 as simple start/finish movement guides. They are illustrations, not photos of the athlete or the gym equipment; the written cues in `data/technique.js` take precedence.

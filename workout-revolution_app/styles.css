@@ -70,3 +70,5 @@ button.set-row.done{width:100%;background:#fff;border:0;border-top:1px solid var
 .set-meta{display:flex;align-items:center;gap:8px;justify-content:flex-end}.set-edit{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted)}.set-edit .icon{width:15px;height:15px}
 #edit-set-form .set-inputs{margin-top:18px}
 body:has(#modal-root .modal-backdrop) .toast{bottom:auto;top:calc(16px + env(safe-area-inset-top,0px))}
+/* Installed app: keep content out from under the phone's clock/battery bar */
+@media (display-mode: standalone){body{padding-top:env(safe-area-inset-top,0px)}body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--paper);z-index:400}}

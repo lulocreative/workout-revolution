@@ -657,10 +657,10 @@ export const PROGRAM = {
   ]
  },
  "focus": {
-  "label": "Focus day",
-  "short": "Chest / arms / forearms",
+  "label": "Chest + Arms",
+  "short": "Second stimulus for chest, arms, forearms",
   "duration": "35–45 min",
-  "accent": "OPTIONAL FOURTH DAY",
+  "accent": "SATURDAY · SECOND STIMULUS",
   "exercises": [
    {
     "id": "flat-db",
@@ -777,7 +777,7 @@ export const PROFILE = {
  "heightCm": null,
  "weightKg": null,
  "weightAsOf": null,
- "goalSessions": 3,
+ "goalSessions": 4,
  "stretchSessions": 4,
  "focus": [
   "Chest fullness",

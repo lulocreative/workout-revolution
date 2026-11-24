@@ -90,3 +90,11 @@ button.set-row.warm{width:100%;background:#fafbf7;border:0;border-top:1px solid 
 .confirm-layer{z-index:600}.confirm-box{max-width:420px}.cf-msg{display:block;font-size:16px!important;line-height:1.5;color:var(--ink)!important;font-weight:650;margin:4px 0 0!important}.confirm-box .form-field{margin-top:14px}.confirm-box .modal-actions{margin-top:20px}
 .btn-danger-solid{background:#c2462f;color:#fff}.btn-danger-solid:hover{background:#a93b27}
 .btn-start{min-height:52px;font-size:15px}
+/* Modern nav: outline icons at rest, solid icon on a lime pill when selected */
+.bottom-nav button{background:transparent!important;gap:4px;padding:6px 2px}.bottom-nav .nav-ic{display:grid;place-items:center;width:52px;height:30px;border-radius:99px;transition:background .2s,transform .2s}
+.bottom-nav button.active .nav-ic{background:var(--lime);color:var(--ink);--nav-cut:var(--lime)}.bottom-nav button.active{color:var(--ink);font-weight:850}.bottom-nav button:active .nav-ic{transform:scale(.92)}
+.bottom-nav .icon-solid{width:20px;height:20px}
+.side-nav .nav-ic{display:grid;place-items:center}.nav-link.active{--nav-cut:var(--lime)}.nav-link .icon-solid{width:19px;height:19px}
+/* Selected workout card: solid ink with lime accents */
+.program-card.is-selected{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 10px 26px rgba(17,28,20,.18)}.program-card.is-selected .program-number{color:var(--lime)}.program-card.is-selected .program-content p{color:#b6c3b9}.program-card.is-selected .chip{background:var(--lime);color:var(--ink)}
+.program-card.focus-card.is-selected{background:var(--ink)}

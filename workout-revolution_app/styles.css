@@ -98,3 +98,11 @@ button.set-row.warm{width:100%;background:#fafbf7;border:0;border-top:1px solid 
 /* Selected workout card: solid ink with lime accents */
 .program-card.is-selected{background:var(--ink);border-color:var(--ink);color:#fff;box-shadow:0 10px 26px rgba(17,28,20,.18)}.program-card.is-selected .program-number{color:var(--lime)}.program-card.is-selected .program-content p{color:#b6c3b9}.program-card.is-selected .chip{background:var(--lime);color:var(--ink)}
 .program-card.focus-card.is-selected{background:var(--ink)}
+/* Tappable exercise rows on Overview */
+.minilist-row.as-button{width:100%;background:none;border:0;border-top:1px solid #ecf0e9;text-align:left;font:inherit;color:inherit;cursor:pointer}.minilist-row.as-button:active{background:#f6f8f2}.minilist-row.as-button .chevron-round{color:var(--muted)}
+.modal .sets-card{margin-top:14px}.modal .set-row.done .set-no{background:#96d056;color:var(--ink)}
+/* Sheets: fade the backdrop, slide the card up from the bottom on phones */
+@keyframes fade-in{from{opacity:0}to{opacity:1}}@keyframes sheet-up{from{transform:translateY(100%)}to{transform:translateY(0)}}@keyframes pop-in{from{opacity:0;transform:translateY(12px) scale(.98)}to{opacity:1;transform:none}}
+.modal-backdrop{animation:fade-in .2s ease both}.modal-backdrop .modal{animation:pop-in .25s cubic-bezier(.2,.8,.2,1) both}
+@media(max-width:720px){.modal-backdrop{align-items:flex-end;padding:0}.modal-backdrop .modal{border-radius:24px 24px 0 0;max-height:88vh;padding-bottom:calc(22px + env(safe-area-inset-bottom,0px));animation:sheet-up .34s cubic-bezier(.2,.85,.25,1) both;position:relative}.modal-backdrop .modal::before{content:"";position:absolute;top:8px;left:50%;width:40px;height:5px;margin-left:-20px;border-radius:99px;background:#d6ddd3}}
+.modal-backdrop.no-anim,.modal-backdrop.no-anim .modal{animation:none!important}

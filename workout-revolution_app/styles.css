@@ -110,5 +110,10 @@ button.set-row.warm{width:100%;background:#fafbf7;border:0;border-top:1px solid 
 .meter[data-kind="energy"] .meter-bars i:nth-child(1){--h:0%}.meter[data-kind="energy"] .meter-bars i:nth-child(2){--h:6%}.meter[data-kind="energy"] .meter-bars i:nth-child(3){--h:12%}.meter[data-kind="energy"] .meter-bars i:nth-child(4){--h:18%}.meter[data-kind="energy"] .meter-bars i:nth-child(5){--h:24%}.meter[data-kind="energy"] .meter-bars i:nth-child(6){--h:30%}.meter[data-kind="energy"] .meter-bars i:nth-child(7){--h:36%}.meter[data-kind="energy"] .meter-bars i:nth-child(8){--h:42%}.meter[data-kind="energy"] .meter-bars i:nth-child(9){--h:51%}.meter[data-kind="energy"] .meter-bars i:nth-child(10){--h:60%}
 .meter[data-kind="soreness-r"] .meter-bars i{height:100%}.meter[data-kind="sleep"] .meter-bars i{height:70%}
 .meter-track input[type=range]{position:absolute;inset:-6px 0;width:100%;height:calc(100% + 12px);margin:0;opacity:0;cursor:pointer;touch-action:pan-y;-webkit-appearance:none;appearance:none}
-.meter-track:focus-within .meter-bars{outline:3px solid #799f26;outline-offset:3px;border-radius:8px}
+.meter-track:has(input:focus-visible) .meter-bars{outline:3px solid #799f26;outline-offset:3px;border-radius:8px}
 .seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}.seg input{position:absolute;opacity:0;pointer-events:none}.seg span{display:grid;place-items:center;height:48px;border:1px solid #d8e0d5;border-radius:12px;background:#fff;font-weight:800;font-size:14px}.seg input:checked+span{background:var(--ink);color:#fff;border-color:var(--ink)}.seg input:focus-visible+span{outline:3px solid #799f26;outline-offset:2px}
+
+/* No tap flash: remove iOS grey tap highlight, focus rings on touch, text selection and colour fades while dragging */
+html{-webkit-tap-highlight-color:transparent}
+.meter-track,.meter-bars,.seg,.rir-chips,.stepper-field{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.meter-track input[type=range]:focus{outline:none}.meter-bars i{transition:none}

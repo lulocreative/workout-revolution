@@ -44,3 +44,11 @@ import {warmupSets,withWarmups} from '../lib/coach.js';
 test('warm-ups ramp to ~50/70/85% rounded down to the machine step',()=>{assert.deepEqual(warmupSets(22.5,2.5),[{weight:10,reps:10},{weight:15,reps:5},{weight:17.5,reps:3}]);assert.deepEqual(warmupSets(220,10),[{weight:110,reps:10},{weight:150,reps:5},{weight:180,reps:3}]);assert.deepEqual(warmupSets(0,2.5),[])});
 test('only the first big lift of each muscle group gets warm-ups',()=>{const ex=(id,groups,w)=>({id,groups,increment:2.5,targetSets:[{weight:w}]});const r=withWarmups([ex('incline-db','chest',20),ex('cable-fly','chest',10),ex('flat-db','chest',17.5),ex('lateral-cable','shoulders',4.5)]);assert.equal(r[0].warmups.length,3);assert.equal(r[1].warmups.length,0);assert.equal(r[2].warmups.length,0);assert.equal(r[3].warmups.length,0)});
 test('warm-ups never count as working sets',()=>{const s={exercises:[{exerciseId:'x',warmups:[{weight:10,reps:10}],sets:[{weight:20,reps:8}]}]};assert.equal(buildSummary(s).sets,1)});
+import {plannedWorkout} from '../lib/coach.js';
+test('weekly plan: Mon Pull, Tue Push, Thu Legs, Sat Chest + Arms',()=>{const at=d=>new Date(`${d}T09:00:00Z`);
+ assert.equal(plannedWorkout([],at('2026-11-23')).type,'pull');   // Monday
+ assert.equal(plannedWorkout([],at('2026-11-24')).type,'push');   // Tuesday
+ const wed=plannedWorkout([],at('2026-11-25'));assert.equal(wed.type,'legs');assert.equal(wed.restToday,true);assert.equal(wed.when,'tomorrow');
+ assert.equal(plannedWorkout([],at('2026-11-28')).type,'focus');  // Saturday
+ assert.equal(plannedWorkout([],at('2026-11-29')).type,'pull');   // Sunday -> Monday
+ assert.equal(plannedWorkout([{date:'2026-11-24',type:'push'}],at('2026-11-24')).type,'legs')}); // Tuesday done -> Thursday

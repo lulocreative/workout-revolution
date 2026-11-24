@@ -12,7 +12,7 @@ Build an athlete-specific training app. The owner wants independent, evidence-ba
 4. Preserve the user's favorite cable lateral raises (normally three sets), Smith shrugs, V-handle pushdowns, lying leg curls and regular compound lifts. Do not change exercises just for novelty.
 5. The owner dislikes RDLs due to previous dizziness. Do not insert them by default. Active dizziness, pain or near-fainting should stop the workout flow and advise appropriate assessment, not a guaranteed safe adaptation.
 6. Prefer rep progression first. Increase load only when all required comparable work sets clear their upper target with enough RIR and no issue flags. When three comparable exposures stall, recommend review rather than automatic movement swaps.
-7. Preserve three core sessions plus an optional fourth based on recovery. An extra session should not be automatically prescribed just because the user asks whether four days are better.
+7. Follow the owner's weekly plan (set 24 Nov 2026): Monday Pull, Tuesday Push, Wednesday rest, Thursday Legs, Friday rest, Saturday Chest + Arms (the `focus` session), Sunday rest. The app suggests today's planned workout, or the next planned day on rest days (`plannedWorkout` in lib/coach.js). Don't add extra sessions on top of this plan without the owner asking.
 8. When changing sets, loads or exercises, show a clear rationale with measurable reason. Log voluntary plan edits in `changeLog`.
 9. Do not infer physique changes from 107 SATS visits. Only seven detailed historical entries are available from conversation; SATS screenshot supplies aggregates only.
 10. Workout UI is thumb-friendly and exercise-by-exercise. Show the current set and its exact target. Do not bury the rest time or RIR.

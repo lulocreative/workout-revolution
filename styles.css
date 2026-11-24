@@ -80,3 +80,6 @@ button.set-row.warm{width:100%;background:#fafbf7;border:0;border-top:1px solid 
 /* Big, glanceable target for the current set: weight · reps · RIR together */
 .target-strip{display:grid;grid-template-columns:1.2fr 1fr .8fr;margin-top:12px;background:var(--ink);color:#fff;border-radius:14px;overflow:hidden}.target-strip>div{padding:10px 12px;display:grid;gap:2px;border-left:1px solid rgba(255,255,255,.12)}.target-strip>div:first-child{border-left:0}.target-strip span{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#aebcb1}.target-strip b{font-size:26px;font-weight:850;letter-spacing:-.04em;line-height:1.05;color:var(--lime);font-variant-numeric:tabular-nums}
 @media(max-width:370px){.target-strip b{font-size:22px}}
+/* Per-set comments */
+.set-comment{margin-top:14px}.set-comment input{font-size:15px!important;font-weight:500!important;min-height:46px}
+.set-row .set-note{grid-column:2/-1;font-size:12px;color:#5c6a60;font-style:italic;margin-top:-4px;overflow-wrap:anywhere}

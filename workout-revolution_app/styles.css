@@ -77,3 +77,6 @@ button.set-row.warm{width:100%;background:#fafbf7;border:0;border-top:1px solid 
 .set-row.warm .set-no,.set-row.warm-summary .set-no{background:#fff3d9;color:#93712b;font-size:11px}.set-row.warm .set-val{font-size:15px;color:#5c6a60}.set-row.warm.done .set-no{background:#f2d58f;color:var(--ink)}.set-row.warm.done .set-val{text-decoration:line-through;text-decoration-color:#b9c2b7}
 .set-row.warm-summary{background:#fafbf7}.set-row.warm-summary .set-val{font-size:14px;color:#5c6a60}
 .set-row{grid-template-columns:34px 76px minmax(0,1fr) auto}.set-label{white-space:nowrap}@media(max-width:720px){.set-row{grid-template-columns:30px 70px minmax(0,1fr) auto}}
+/* Big, glanceable target for the current set: weight · reps · RIR together */
+.target-strip{display:grid;grid-template-columns:1.2fr 1fr .8fr;margin-top:12px;background:var(--ink);color:#fff;border-radius:14px;overflow:hidden}.target-strip>div{padding:10px 12px;display:grid;gap:2px;border-left:1px solid rgba(255,255,255,.12)}.target-strip>div:first-child{border-left:0}.target-strip span{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#aebcb1}.target-strip b{font-size:26px;font-weight:850;letter-spacing:-.04em;line-height:1.05;color:var(--lime);font-variant-numeric:tabular-nums}
+@media(max-width:370px){.target-strip b{font-size:22px}}

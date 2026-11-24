@@ -83,3 +83,5 @@ button.set-row.warm{width:100%;background:#fafbf7;border:0;border-top:1px solid 
 /* Per-set comments */
 .set-comment{margin-top:14px}.set-comment input{font-size:15px!important;font-weight:500!important;min-height:46px}
 .set-row .set-note{grid-column:2/-1;font-size:12px;color:#5c6a60;font-style:italic;margin-top:-4px;overflow-wrap:anywhere}
+.btn-cancel{color:#bb4b34}
+@media(max-width:720px){.page-heading .heading-actions{gap:8px}.page-heading .heading-actions .btn-sm{padding:0 8px}}

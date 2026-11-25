@@ -3,7 +3,7 @@
 import { NUTRITION } from './data/nutrition.js';
 import { SLOTS, CATEGORIES, SERVING_STEPS, DAY_NAMES, getRecipe, findRecipes, scaleRecipe, weekPlan, swapOptions, shoppingList, shoppingText,
   journalEntryFromRecipe, customJournalEntry, journalForDate, proteinForDate, dayContext, sumNutrition,
-  FOODS, FOOD_GROUPS, getFood, mealFromItems, mealFeedback, builtJournalEntry } from './lib/nutrition.js';
+  FOODS, FOOD_GROUPS, getFood, mealFromItems, mealFeedback, builtJournalEntry, suppStreak, suppWeek } from './lib/nutrition.js';
 
 export function createFood(ctx) {
   const { esc, ico } = ctx;
@@ -29,6 +29,17 @@ export function createFood(ctx) {
   const itemsOf = (obj) => Object.entries(obj).map(([foodId, qty]) => ({ foodId, qty }));
   const fbList = (fb) => `<ul class="fb">${fb.map(x => `<li class="fb-${x.tone}">${esc(x.text)}</li>`).join('')}</ul>`;
   function reSheet() { const a = document.querySelector('#modal-root .modal'), st = a ? a.scrollTop : 0; ctx.openSheet(); const b = document.querySelector('#modal-root .modal'); if (b) b.scrollTop = st; }
+  function supplementsCard() {
+    const n = N(), date = today(), done = n.suppLog[date] || [], ws = ctx.weekStart();
+    const shakes = journalForDate(n.journal, date).filter(e => e.source === 'shake').length;
+    return `<section class="card"><div class="card-header"><div><div class="eyebrow">SUPPLEMENTS · TODAY</div><h3 style="margin-top:8px">${done.filter(id => n.supplements.some(s => s.id === id)).length}/${n.supplements.length} taken</h3></div></div>
+      <div class="supps">${n.supplements.map(s => { const on = done.includes(s.id), st = suppStreak(n.suppLog, s.id, date); return `<div class="supp ${on ? 'on' : ''}"><button class="supp-tick" data-action="food-supp" data-id="${esc(s.id)}" aria-pressed="${on}" aria-label="${esc(s.name)} taken today">${on ? ico('check', 18) : ''}</button>
+        <div class="supp-main"><b>${esc(s.name)}</b> <span class="small muted">${esc(s.dose || '')}</span><div class="supp-week" aria-label="This week">${suppWeek(n.suppLog, s.id, ws).map((x, i) => `<i class="${x ? 'y' : ''}" title="${DAY_NAMES[i]}"></i>`).join('')}${st > 1 ? `<span class="small muted">${st}-day streak</span>` : ''}</div>
+        ${s.why ? `<details><summary class="small">How to take it</summary><p class="small muted">${esc(s.why)}</p></details>` : ''}</div>
+        <button class="icon-btn" data-action="food-supp-del" data-id="${esc(s.id)}" aria-label="Remove ${esc(s.name)}">${ico('x', 14)}</button></div>`; }).join('')}</div>
+      <div class="food-quick" style="margin-top:12px"><button class="btn btn-subtle btn-block" data-action="food-shake">${ico('plus')} Protein shake${shakes ? ` (${shakes} today)` : ''}</button><button class="btn btn-subtle btn-block" data-action="food-supp-add">${ico('plus')} Add supplement</button></div>
+      <p class="small muted" style="margin-top:8px">A shake adds ≈ 25 g to today's protein. Food first; a shake fills the gap on busy days.</p></section>`;
+  }
   function usualMeals() {
     const mine = N().myMeals || [];
     return `<section class="card"><div class="card-header"><div><div class="eyebrow">WHAT YOU USUALLY EAT</div><h3 style="margin-top:8px">Log a real meal</h3></div></div>
@@ -67,6 +78,7 @@ export function createFood(ctx) {
       <div class="pbar"><i style="width:${pct}%"></i><span class="band" title="140–160 g"></span></div>
       <p class="small muted">Most days ~140–160 g works well; 130 g on an imperfect day is fine. Meals you log count here, planned ones don't.</p></section>
     ${usualMeals()}
+    ${supplementsCard()}
     <div class="section-row"><h2 class="section-title">Recipe ideas for today</h2><span class="section-helper">PLAN, NOT EATEN</span></div>
     ${plan.dayNotes ? `<div class="notice" style="margin-bottom:12px">${esc(plan.dayNotes)}</div>` : ''}
     <div class="meal-list">${plan.meals.map(m => {
@@ -224,6 +236,10 @@ export function createFood(ctx) {
       case 'food-add': { const f = getFood(el.dataset.id); if (!f) return; if (ui.sheet.items[f.id]) delete ui.sheet.items[f.id]; else ui.sheet.items[f.id] = f.def; return reSheet(); }
       case 'food-qty': { const f = getFood(el.dataset.id), cur = ui.sheet.items[f.id] || 0, next = Math.round((cur + Number(el.dataset.d) * f.step) * 10) / 10; if (next <= 0) delete ui.sheet.items[f.id]; else ui.sheet.items[f.id] = next; return reSheet(); }
       case 'food-my-log': { const m = (n.myMeals || []).find(x => x.id === el.dataset.id); if (!m) return; n.journal.push(builtJournalEntry({ date, slot: m.slot, items: m.items, name: m.name })); save(); ctx.render(); const fb = mealFeedback(mealFromItems(m.items), { slot: m.slot, training: trainingToday() }); return ctx.toast(`Logged ${m.name}. ${fb[0].text}`); }
+      case 'food-supp': { const l = n.suppLog[date] || [], id = el.dataset.id; n.suppLog[date] = l.includes(id) ? l.filter(x => x !== id) : [...l, id]; save(); return ctx.render(); }
+      case 'food-shake': { const e = builtJournalEntry({ date, slot: 'snack', items: [{ foodId: 'shake', qty: 1 }], name: 'Protein shake' }); e.source = 'shake'; n.journal.push(e); save(); ctx.render(); return ctx.toast('Protein shake logged · ≈ 25 g protein'); }
+      case 'food-supp-del': if (await ctx.askConfirm('Remove this supplement from your list? Past ticks stay in your backup.')) { n.supplements = n.supplements.filter(s => s.id !== el.dataset.id); save(); ctx.render(); } return;
+      case 'food-supp-add': { const name = (await ctx.askText('Supplement name (e.g. Vitamin D, Magnesium)'))?.trim(); if (!name) return; n.supplements.push({ id: `supp-${Date.now()}`, name: name.slice(0, 40), dose: '', why: '' }); save(); return ctx.render(); }
       case 'food-my-del': if (await ctx.askConfirm('Remove this from My meals? Logged meals stay in your journal.')) { n.myMeals = n.myMeals.filter(m => m.id !== el.dataset.id); save(); ctx.render(); } return;
       case 'food-open-log': return open({ kind: 'log' });
       case 'food-choc': n.journal.push(customJournalEntry({ date, name: 'Dark chocolate ~25 g', notes: 'Optional treat' })); save(); ctx.render(); return ctx.toast('Dark chocolate logged.');

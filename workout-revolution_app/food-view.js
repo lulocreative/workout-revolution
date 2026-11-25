@@ -2,7 +2,8 @@
 // Planned meals are suggestions. Only entries the user logs in the journal count as eaten.
 import { NUTRITION } from './data/nutrition.js';
 import { SLOTS, CATEGORIES, SERVING_STEPS, DAY_NAMES, getRecipe, findRecipes, scaleRecipe, weekPlan, swapOptions, shoppingList, shoppingText,
-  journalEntryFromRecipe, customJournalEntry, journalForDate, proteinForDate, dayContext, sumNutrition } from './lib/nutrition.js';
+  journalEntryFromRecipe, customJournalEntry, journalForDate, proteinForDate, dayContext, sumNutrition,
+  FOODS, FOOD_GROUPS, getFood, mealFromItems, mealFeedback, builtJournalEntry } from './lib/nutrition.js';
 
 export function createFood(ctx) {
   const { esc, ico } = ctx;
@@ -21,6 +22,20 @@ export function createFood(ctx) {
   const kcalText = (n) => n?.kcal == null ? 'kcal unknown' : `≈ ${g(n.kcal)} kcal`;
   const totalsText = (t) => `≈ ${g(t.proteinG)} g protein · ≈ ${g(t.kcal)} kcal${t.unknown ? ` <b class="unk">+ ${t.unknown} meal${t.unknown > 1 ? 's' : ''} unknown</b>` : ''}`;
 
+  function trainingToday() {
+    const date = today(), planned = ctx.plannedToday();
+    return dayContext({ history: ctx.state().history, choice: N().sessionChoice[date] || null, planned: planned.when === 'today' ? planned.type : null, date }).training;
+  }
+  const itemsOf = (obj) => Object.entries(obj).map(([foodId, qty]) => ({ foodId, qty }));
+  const fbList = (fb) => `<ul class="fb">${fb.map(x => `<li class="fb-${x.tone}">${esc(x.text)}</li>`).join('')}</ul>`;
+  function reSheet() { const a = document.querySelector('#modal-root .modal'), st = a ? a.scrollTop : 0; ctx.openSheet(); const b = document.querySelector('#modal-root .modal'); if (b) b.scrollTop = st; }
+  function usualMeals() {
+    const mine = N().myMeals || [];
+    return `<section class="card"><div class="card-header"><div><div class="eyebrow">WHAT YOU USUALLY EAT</div><h3 style="margin-top:8px">Log a real meal</h3></div></div>
+      <div class="my-meals">${mine.map(m => { const est = mealFromItems(m.items); return `<button class="my-meal" data-action="food-my-log" data-id="${esc(m.id)}"><b>${esc(m.name)}</b><span>${esc(SLOT_LABEL[m.slot] || m.slot)} · ≈ ${g(est.nutrition.proteinG)} g protein</span><i>${ico('plus', 16)}</i></button>`; }).join('')}</div>
+      <button class="btn btn-dark btn-block" style="margin-top:12px" data-action="food-open-build">${ico('plus')} Build what I ate</button>
+      <p class="small muted" style="margin-top:8px">Tap a usual meal to log it for today. Build a meal to get feedback on it.</p></section>`;
+  }
   function recipeBody(r, servings = 1, portions = {}) {
     const s = scaleRecipe(r, servings, portions);
     const editable = Boolean(ui.sheet?.kind === 'recipe');
@@ -51,7 +66,8 @@ export function createFood(ctx) {
     <section class="card food-protein"><div class="card-header"><div><div class="eyebrow">EATEN TODAY · LOGGED BY YOU</div><h3 style="margin-top:8px">${p.entries ? `${g(p.known)} g protein` : 'Nothing logged yet'}${p.unknown ? ` <span class="unk">+ ${p.unknown} unknown</span>` : ''}</h3></div></div>
       <div class="pbar"><i style="width:${pct}%"></i><span class="band" title="140–160 g"></span></div>
       <p class="small muted">Most days ~140–160 g works well; 130 g on an imperfect day is fine. Meals you log count here, planned ones don't.</p></section>
-    <div class="section-row"><h2 class="section-title">Planned meals</h2><span class="section-helper">PLAN, NOT EATEN</span></div>
+    ${usualMeals()}
+    <div class="section-row"><h2 class="section-title">Recipe ideas for today</h2><span class="section-helper">PLAN, NOT EATEN</span></div>
     ${plan.dayNotes ? `<div class="notice" style="margin-bottom:12px">${esc(plan.dayNotes)}</div>` : ''}
     <div class="meal-list">${plan.meals.map(m => {
       const done = eaten.find(e => e.planned?.slot === m.slot && e.planned?.date === date);
@@ -97,9 +113,11 @@ export function createFood(ctx) {
     const n = N();
     const dates = [...new Set(n.journal.map(e => e.date))].sort().reverse().slice(0, 30);
     return `<div class="notice" style="margin-bottom:12px">Only what you log here counts as eaten. Planned meals are never added automatically.</div>
-    <div class="food-quick"><button class="btn btn-dark btn-block" data-action="food-open-log">${ico('plus')} Log a recipe</button><button class="btn btn-subtle btn-block" data-action="food-open-custom">${ico('plus')} Log a free meal</button></div>
+    <button class="btn btn-dark btn-block" data-action="food-open-build">${ico('plus')} Log what I ate</button>
+    <div class="food-quick"><button class="btn btn-subtle btn-block" data-action="food-open-log">${ico('plus')} From a recipe</button><button class="btn btn-subtle btn-block" data-action="food-open-custom">${ico('plus')} Restaurant / unknown</button></div>
+    ${(N().myMeals || []).length ? `<section class="card"><div class="eyebrow">MY MEALS</div>${N().myMeals.map(m => `<div class="journal-entry"><div><b>${esc(m.name)}</b><span class="small muted">${esc(SLOT_LABEL[m.slot] || m.slot)} · ≈ ${g(mealFromItems(m.items).nutrition.proteinG)} g protein</span></div><div style="display:flex;gap:6px"><button class="icon-btn" data-action="food-open-build" data-from="${esc(m.id)}" aria-label="Edit and log ${esc(m.name)}">${ico('edit', 16)}</button><button class="icon-btn" data-action="food-my-del" data-id="${esc(m.id)}" aria-label="Remove ${esc(m.name)}">${ico('x', 16)}</button></div></div>`).join('')}</section>` : ''}
     ${dates.length ? dates.map(d => { const p = proteinForDate(n.journal, d); const es = journalForDate(n.journal, d); return `<section class="card journal-day"><div class="card-header"><div><div class="eyebrow">${esc(ctx.fmtDate(d))}</div><p class="small" style="margin-top:6px"><b>${g(p.known)} g protein logged</b>${p.unknown ? ` <span class="unk">+ ${p.unknown} unknown</span>` : ''}</p></div></div>
-      ${es.map(e => `<div class="journal-entry"><div><b>${esc(e.name)}</b><span class="small muted">${e.servings !== 1 ? `${e.servings} servings · ` : ''}${proteinText(e.nutrition)}${e.source === 'recipe' ? ' (estimate)' : ''}${e.notes ? ` · ${esc(e.notes)}` : ''}</span></div><button class="icon-btn" data-action="food-del-entry" data-id="${esc(e.id)}" aria-label="Delete ${esc(e.name)}">${ico('x', 16)}</button></div>`).join('')}</section>`; }).join('') : '<div class="empty">No meals logged yet.</div>'}`;
+      ${es.map(e => `<div class="journal-entry"><div><b>${esc(e.name)}</b><span class="small muted">${e.servings !== 1 ? `${e.servings} servings · ` : ''}${proteinText(e.nutrition)}${e.source === 'recipe' || e.source === 'built' ? ' (estimate)' : ''}${e.notes ? ` · ${esc(e.notes)}` : ''}</span></div><button class="icon-btn" data-action="food-del-entry" data-id="${esc(e.id)}" aria-label="Delete ${esc(e.name)}">${ico('x', 16)}</button></div>`).join('')}</section>`; }).join('') : '<div class="empty">No meals logged yet.</div>'}`;
   }
 
   // ---------- Body & bloating ----------
@@ -138,6 +156,18 @@ export function createFood(ctx) {
         <p class="small muted" style="margin-top:8px">Portions per serving are editable; amounts on the right are for ${s.servings} serving${s.servings === 1 ? '' : 's'}.</p>
         ${recipeBody(r, s.servings, s.portions)}
         <form id="food-log-recipe-form" class="log-row"><div class="form-field"><label for="flr-date">Ate it on</label><input id="flr-date" name="date" type="date" value="${today()}" required/></div><button class="btn btn-dark" type="submit">${ico('check')} Log ${s.servings === 1 ? '' : `${s.servings}× `}as eaten</button></form>`);
+    }
+    if (s.kind === 'build') {
+      const m = mealFromItems(itemsOf(s.items)), fb = mealFeedback(m, { slot: s.slot, training: trainingToday() });
+      return wrap('WHAT I ATE', 'Build your meal', `
+        <div class="chip-row" role="group" aria-label="Meal">${['breakfast', 'lunch', 'dinner', 'snack'].map(k => `<button class="pick ${s.slot === k ? 'on' : ''}" data-action="food-b-slot" data-slot="${k}">${SLOT_LABEL[k]}</button>`).join('')}</div>
+        <div class="plate">${m.rows.length ? m.rows.map(r => `<div class="plate-row"><div><b>${esc(r.food.name)}</b><span class="small muted">${r.qty} × ${esc(r.food.unit)} · ≈ ${g(r.food.p * r.qty)} g protein</span></div><div class="qty"><button type="button" data-action="food-qty" data-id="${r.foodId}" data-d="-1" aria-label="Less ${esc(r.food.name)}">−</button><b>${r.qty}</b><button type="button" data-action="food-qty" data-id="${r.foodId}" data-d="1" aria-label="More ${esc(r.food.name)}">+</button></div></div>`).join('') : '<p class="small muted">Tap foods below to add them to your plate.</p>'}</div>
+        <div class="fb-panel"><div class="fb-total"><b>${m.nutrition.proteinG == null ? '—' : `≈ ${m.nutrition.proteinG} g protein`}</b><span>${m.nutrition.kcal == null ? '' : `≈ ${m.nutrition.kcal} kcal`} ${est}</span></div>${fbList(fb)}</div>
+        ${FOOD_GROUPS.map(([k, l]) => `<h4 class="add-h">${l}</h4><div class="add-grid">${FOODS.filter(f => f.group === k).map(f => `<button type="button" class="add-food ${s.items[f.id] ? 'in' : ''}" data-action="food-add" data-id="${f.id}">${s.items[f.id] ? ico('check', 14) : ico('plus', 14)} ${esc(f.name)}</button>`).join('')}</div>`).join('')}
+        <form id="food-build-form" class="stack" style="gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)">
+          <div class="modal-grid" style="margin-top:0"><div class="form-field"><label for="fbd-date">Date</label><input id="fbd-date" type="date" data-food="b-date" value="${esc(s.date)}" required/></div><div class="form-field"><label for="fbd-name">Name (optional)</label><input id="fbd-name" data-food="b-name" maxlength="80" value="${esc(s.name)}" placeholder="${esc(m.name || 'e.g. My breakfast')}"/></div></div>
+          <label class="checkbox-line"><input type="checkbox" name="save" ${s.save ? 'checked' : ''} data-food="b-save"/> Save to My meals for one-tap logging</label>
+          <button class="btn btn-dark btn-block" type="submit" ${m.rows.length ? '' : 'disabled'}>${ico('check')} Log as eaten</button></form>`);
     }
     if (s.kind === 'swap') {
       const opts = swapOptions(s.slot), cur = weekPlan(N().weekOverrides)[s.day].meals.find(m => m.slot === s.slot);
@@ -189,6 +219,12 @@ export function createFood(ctx) {
         return;
       }
       case 'food-open-custom': return open({ kind: 'custom' });
+      case 'food-open-build': { const from = (n.myMeals || []).find(m => m.id === el.dataset.from); return open({ kind: 'build', slot: from?.slot || (new Date().getHours() < 11 ? 'breakfast' : new Date().getHours() < 15 ? 'lunch' : 'dinner'), date, name: from?.name || '', save: false, items: Object.fromEntries((from?.items || []).map(i => [i.foodId, i.qty])) }); }
+      case 'food-b-slot': ui.sheet.slot = el.dataset.slot; return reSheet();
+      case 'food-add': { const f = getFood(el.dataset.id); if (!f) return; if (ui.sheet.items[f.id]) delete ui.sheet.items[f.id]; else ui.sheet.items[f.id] = f.def; return reSheet(); }
+      case 'food-qty': { const f = getFood(el.dataset.id), cur = ui.sheet.items[f.id] || 0, next = Math.round((cur + Number(el.dataset.d) * f.step) * 10) / 10; if (next <= 0) delete ui.sheet.items[f.id]; else ui.sheet.items[f.id] = next; return reSheet(); }
+      case 'food-my-log': { const m = (n.myMeals || []).find(x => x.id === el.dataset.id); if (!m) return; n.journal.push(builtJournalEntry({ date, slot: m.slot, items: m.items, name: m.name })); save(); ctx.render(); const fb = mealFeedback(mealFromItems(m.items), { slot: m.slot, training: trainingToday() }); return ctx.toast(`Logged ${m.name}. ${fb[0].text}`); }
+      case 'food-my-del': if (await ctx.askConfirm('Remove this from My meals? Logged meals stay in your journal.')) { n.myMeals = n.myMeals.filter(m => m.id !== el.dataset.id); save(); ctx.render(); } return;
       case 'food-open-log': return open({ kind: 'log' });
       case 'food-choc': n.journal.push(customJournalEntry({ date, name: 'Dark chocolate ~25 g', notes: 'Optional treat' })); save(); ctx.render(); return ctx.toast('Dark chocolate logged.');
       case 'food-del-entry': if (await ctx.askConfirm('Delete this meal from your journal?')) { n.journal = n.journal.filter(e => e.id !== el.dataset.id); save(); ctx.render(); } return;
@@ -199,6 +235,12 @@ export function createFood(ctx) {
     const n = N(), d = new FormData(form);
     if (form.id === 'food-log-recipe-form') { const r = getRecipe(ui.sheet.id); n.journal.push(journalEntryFromRecipe(r, String(d.get('date')), ui.sheet.servings)); save(); close(); ctx.render(); return ctx.toast('Logged as eaten.'); }
     if (form.id === 'food-log-form') { const r = getRecipe(String(d.get('recipe'))); if (!r) return; n.journal.push(journalEntryFromRecipe(r, String(d.get('date')), Number(d.get('servings')) || 1)); save(); close(); ctx.render(); return ctx.toast('Logged as eaten.'); }
+    if (form.id === 'food-build-form') {
+      const s = ui.sheet, items = itemsOf(s.items); if (!items.length) return ctx.toast('Add at least one food.');
+      const entry = builtJournalEntry({ date: s.date || today(), slot: s.slot, items, name: s.name }); n.journal.push(entry);
+      if (s.save) { n.myMeals = n.myMeals || []; n.myMeals.push({ id: `my-${Date.now()}`, name: entry.name, slot: s.slot, items }); }
+      save(); close(); ctx.render(); return ctx.toast(`Logged${s.save ? ' and saved to My meals' : ''} · ≈ ${entry.nutrition.proteinG} g protein`);
+    }
     if (form.id === 'food-custom-form') { const name = String(d.get('name') || '').trim(); if (!name) return ctx.toast('Add a short description.'); n.journal.push(customJournalEntry({ date: String(d.get('date')), name, proteinG: d.get('proteinG'), kcal: d.get('kcal'), notes: d.get('notes') })); save(); close(); ctx.render(); return ctx.toast('Meal logged.'); }
     if (form.id === 'food-body-form') {
       const num = (k) => { const v = d.get(k); return v === '' || v == null ? null : Number(v); };
@@ -209,6 +251,7 @@ export function createFood(ctx) {
   }
   function input(el) {
     const kind = el.dataset.food;
+    if (ui.sheet?.kind === 'build') { if (kind === 'b-date') { ui.sheet.date = el.value; return; } if (kind === 'b-name') { ui.sheet.name = el.value; return; } }
     if (kind === 'query') { ui.query = el.value; const list = document.getElementById('food-recipe-list'); if (list) list.innerHTML = recipeList(); return; }
     if (kind === 'portion' && ui.sheet?.kind === 'recipe') {
       const v = el.value === '' ? null : Number(el.value);
@@ -217,6 +260,7 @@ export function createFood(ctx) {
   }
   function change(el) {
     const kind = el.dataset.food, n = N();
+    if (kind === 'b-save' && ui.sheet?.kind === 'build') { ui.sheet.save = el.checked; return; }
     if (kind === 'check') { n.shoppingChecked[el.dataset.id] = el.checked; save(); el.closest('.shop-item')?.classList.toggle('got', el.checked); return; }
     if (kind === 'portion' && ui.sheet?.kind === 'recipe') { input(el); ctx.openSheet(); }
   }

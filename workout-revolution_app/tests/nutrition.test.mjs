@@ -1,5 +1,5 @@
 import test from 'node:test'; import assert from 'node:assert/strict';
-import { getRecipe, findRecipes, scaleRecipe, sumNutrition, weekPlan, shoppingList, shoppingText, customJournalEntry, journalEntryFromRecipe, proteinForDate, dayContext, migrateNutrition } from '../lib/nutrition.js';
+import { getRecipe, findRecipes, scaleRecipe, sumNutrition, weekPlan, shoppingList, shoppingText, customJournalEntry, journalEntryFromRecipe, proteinForDate, dayContext, migrateNutrition, mealFromItems, mealFeedback, builtJournalEntry, DEFAULT_MY_MEALS } from '../lib/nutrition.js';
 import { migrateState, prepareImport, backupPayload, freshState } from '../lib/storage.js';
 import { NUTRITION } from '../data/nutrition.js';
 
@@ -95,4 +95,29 @@ test('backups include nutrition logs and survive a round trip', () => {
 test('seed meals are never presented as eaten', () => {
   assert.deepEqual(freshState().nutrition.journal, []);
   assert.ok(NUTRITION.recipes.filter(r => r.ingredients.some(i => /milk|yogurt|skyr|cottage|whey/i.test(i.name))).every(r => r.ingredients.filter(i => /milk|yogurt|skyr|cottage|whey/i.test(i.name)).every(i => /lactose-free|tolerated/i.test(i.name))));
+});
+
+test('build what I ate: 3 eggs + toast + avocado estimate and feedback', () => {
+  const m = mealFromItems([{ foodId: 'egg', qty: 3 }, { foodId: 'toast', qty: 2 }, { foodId: 'avocado', qty: 1 }]);
+  assert.deepEqual(m.nutrition, { kcal: 520, proteinG: 29, carbsG: 39, fatG: 28 });
+  const fb = mealFeedback(m, { slot: 'breakfast' });
+  assert.equal(fb[0].tone, 'mid'); assert.match(fb[0].text, /skyr/);
+  assert.ok(fb.some(x => /No veg/.test(x.text)));
+  assert.equal(mealFeedback(mealFromItems([]), {}).length, 1);
+  const e = builtJournalEntry({ date: '2026-11-25', slot: 'breakfast', items: [{ foodId: 'egg', qty: 3 }] });
+  assert.equal(e.source, 'built'); assert.equal(e.nutrition.proteinG, 20); assert.equal(e.name, '3 eggs');
+});
+
+test('canteen plates: creamy/fried days get a gentle note, protein still counts', () => {
+  const m = mealFromItems([{ foodId: 'c-protein', qty: 1.5 }, { foodId: 'c-cream', qty: 1 }, { foodId: 'c-fried', qty: 1 }, { foodId: 'veg', qty: 1 }]);
+  assert.ok(m.nutrition.proteinG >= 30);
+  const fb = mealFeedback(m, { slot: 'lunch' });
+  assert.equal(fb[0].tone, 'good'); assert.ok(fb.some(x => /Heavy plate/.test(x.text)));
+  assert.ok(!mealFeedback(mealFromItems([{ foodId: 'c-protein', qty: 1.5 }, { foodId: 'c-light', qty: 1 }]), { slot: 'lunch' }).some(x => /cream|Heavy/i.test(x.text)));
+});
+
+test('My meals default to the usual breakfasts and canteen lunch, and old data keeps its own', () => {
+  assert.deepEqual(migrateNutrition({}).myMeals.map(m => m.id), DEFAULT_MY_MEALS.map(m => m.id));
+  assert.deepEqual(migrateNutrition({ myMeals: [] }).myMeals, []);
+  assert.ok(DEFAULT_MY_MEALS.some(m => m.id === 'my-canteen'));
 });

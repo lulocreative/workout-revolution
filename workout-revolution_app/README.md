@@ -49,6 +49,13 @@ A **Food** tab sits next to Train. It is a planning and journaling aid, not a di
 - **Body**: optional morning weight, waist, bloating 0–10, possible triggers and notes. No diagnosis or calorie targets; the text points to a doctor for persistent or worrying symptoms.
 - Lactose-free dairy is the default in every recipe. Protein guidance is a flexible ~140–160 g/day (130 g is fine).
 
+### Log what you actually eat
+The recipes are references. Day to day, use **Log a real meal** (Food → Today) or **Log what I ate** (Journal):
+- **My meals**: one tap logs a usual meal for today. Pre-filled: *3 eggs + toast*, *3 eggs + toast + avocado*, *Canteen lunch*. Nothing is logged until you tap.
+- **Build what I ate**: pick everyday foods with − / + by hand-size portions. The **Canteen / eating out** group covers plates you can't weigh (palm of meat/fish, creamy vs light sauce, fried, dessert).
+- Live, calm feedback: protein vs the 30–45 g main-meal / 15–25 g snack aim, veg check, carbs on training days, a note on creamy/fried plates and regular dairy. All values are generic estimates.
+- Tick *Save to My meals* to reuse a plate later; remove saved meals in the Journal.
+
 ### Backups and older data
 All food data lives in `state.nutrition` in the same local storage and the same JSON backup as your workouts. `migrateState`/`prepareImport` in `lib/storage.js` add empty nutrition defaults to older backups and saved data **without changing** gym history, the active workout, photos or measurements. New exports include nutrition logs. Everything stays on the device; nothing is sent anywhere.
 

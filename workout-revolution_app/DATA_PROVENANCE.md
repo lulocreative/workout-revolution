@@ -51,3 +51,7 @@ Each exercise links one public YouTube form tutorial (`videoId` in `data/techniq
 ## Food & Recovery data
 
 `data/nutrition.seed.json` (25 Nov 2026) holds recipes, portions, a 7-day example week and guidance prepared from the owner's older nutrition documents and stated preferences (lactose intolerance, familiar foods). All nutrition values are **planning estimates** from generalised ingredient references, not product labels or measured intake. The seed never creates journal entries: only meals the owner logs count as eaten, and unknown values (such as the flexible social dinner) stay `null`. The public GitHub Pages build removes the personal-history section and body-weight references from this file.
+
+## Dish photos
+
+The 19 images in `assets/food/` (one per recipe id) were AI-generated with Higgsfield (gpt_image_2_6) on 25 Nov 2026 as illustrative food photos. They show the dish style, not exact portions or brands; the recipe text and amounts take precedence.

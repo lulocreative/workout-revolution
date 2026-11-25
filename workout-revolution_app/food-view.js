@@ -15,6 +15,8 @@ export function createFood(ctx) {
   const g = (v) => (v == null ? '?' : Math.round(v));
   const SLOT_LABEL = { breakfast: 'Breakfast', lunch: 'Lunch', snack: 'Snack', dinner: 'Dinner' };
   const est = '<span class="est">Estimate</span>';
+  // AI-generated dish photos (assets/food/<recipe id>.webp); hidden if missing.
+  const dishImg = (id, cls) => `<img class="${cls}" src="./assets/food/${esc(id)}.webp" alt="" loading="lazy" decoding="async" onerror="this.remove()"/>`;
   const proteinText = (n) => n?.proteinG == null ? 'protein unknown' : `≈ ${g(n.proteinG)} g protein`;
   const kcalText = (n) => n?.kcal == null ? 'kcal unknown' : `≈ ${g(n.kcal)} kcal`;
   const totalsText = (t) => `≈ ${g(t.proteinG)} g protein · ≈ ${g(t.kcal)} kcal${t.unknown ? ` <b class="unk">+ ${t.unknown} meal${t.unknown > 1 ? 's' : ''} unknown</b>` : ''}`;
@@ -53,7 +55,7 @@ export function createFood(ctx) {
     ${plan.dayNotes ? `<div class="notice" style="margin-bottom:12px">${esc(plan.dayNotes)}</div>` : ''}
     <div class="meal-list">${plan.meals.map(m => {
       const done = eaten.find(e => e.planned?.slot === m.slot && e.planned?.date === date);
-      return `<article class="meal ${done ? 'eaten' : ''}"><div class="meal-top"><span class="slot">${SLOT_LABEL[m.slot]}</span><span class="chip ${done ? 'green' : ''}">${done ? 'Eaten ✓' : 'Planned'}</span></div>
+      return `<article class="meal ${done ? 'eaten' : ''}">${dishImg(m.recipeId, 'meal-img')}<div class="meal-top"><span class="slot">${SLOT_LABEL[m.slot]}</span><span class="chip ${done ? 'green' : ''}">${done ? 'Eaten ✓' : 'Planned'}</span></div>
         <h4>${esc(m.recipe?.name || m.recipeId)}</h4><p class="small muted">${proteinText(m.nutrition)} · ${kcalText(m.nutrition)} · ${m.recipe?.timeMinutes || 0} min ${est}</p>
         <details><summary>Recipe & portions</summary>${m.recipe ? recipeBody(m.recipe) : ''}</details>
         <div class="meal-actions"><button class="btn ${done ? 'btn-subtle' : 'btn-dark'} btn-sm" data-action="food-eat" data-slot="${m.slot}">${done ? 'Undo eaten' : `${ico('check', 16)} I ate this`}</button><button class="btn btn-subtle btn-sm" data-action="food-recipe" data-id="${esc(m.recipeId)}">Scale / cook</button></div></article>`;
@@ -72,7 +74,7 @@ export function createFood(ctx) {
   }
 
   // ---------- Recipes ----------
-  const recipeList = () => findRecipes({ category: ui.cat, query: ui.query }).map(r => `<button class="recipe-card" data-action="food-recipe" data-id="${esc(r.id)}"><span class="slot">${esc(r.category)}</span><b>${esc(r.name)}</b><span class="small muted">${proteinText(r.nutritionApprox)} · ${r.timeMinutes} min</span><span class="tags">${(r.tags || []).slice(0, 3).map(t => `<i>${esc(t)}</i>`).join('')}</span></button>`).join('') || '<div class="empty">No recipes match.</div>';
+  const recipeList = () => findRecipes({ category: ui.cat, query: ui.query }).map(r => `<button class="recipe-card" data-action="food-recipe" data-id="${esc(r.id)}">${dishImg(r.id, 'card-img')}<span class="slot">${esc(r.category)}</span><b>${esc(r.name)}</b><span class="small muted">${proteinText(r.nutritionApprox)} · ${r.timeMinutes} min</span><span class="tags">${(r.tags || []).slice(0, 3).map(t => `<i>${esc(t)}</i>`).join('')}</span></button>`).join('') || '<div class="empty">No recipes match.</div>';
   function recipes_() {
     return `<div class="chip-row">${['all', ...CATEGORIES].map(c => `<button class="pick ${ui.cat === c ? 'on' : ''}" data-action="food-cat" data-cat="${c}">${c === 'all' ? 'All' : c[0].toUpperCase() + c.slice(1)}</button>`).join('')}</div>
     <div class="form-field" style="margin:12px 0"><input type="search" data-food="query" value="${esc(ui.query)}" placeholder="Search recipes or ingredients" aria-label="Search recipes" autocomplete="off"/></div>
@@ -129,7 +131,7 @@ export function createFood(ctx) {
     if (s.kind === 'recipe') {
       const r = getRecipe(s.id); if (!r) return '';
       const sc = scaleRecipe(r, s.servings, s.portions);
-      return wrap(`${esc(r.category.toUpperCase())} · ${r.timeMinutes} MIN`, esc(r.name), `
+      return wrap(`${esc(r.category.toUpperCase())} · ${r.timeMinutes} MIN`, esc(r.name), `${dishImg(r.id, 'sheet-img')}
         <div class="nut-row">${[['Protein', sc.nutrition.proteinG, 'g'], ['Energy', sc.nutrition.kcal, 'kcal'], ['Carbs', sc.nutrition.carbsG, 'g'], ['Fat', sc.nutrition.fatG, 'g']].map(([l, v, u]) => `<div><span>${l}</span><b>${v == null ? 'Unknown' : `≈ ${v} ${u}`}</b></div>`).join('')}</div>
         <p class="small muted" style="margin-top:6px">${est} ${esc(r.nutritionApprox.label)}${sc.portionsEdited ? '. You edited portions: these totals still follow the original recipe scaled by servings.' : ''}</p>
         <div class="chip-row" role="group" aria-label="Servings" style="margin-top:14px">${SERVING_STEPS.map(v => `<button class="pick ${s.servings === v ? 'on' : ''}" data-action="food-servings" data-n="${v}">${v === 0.5 ? '½' : v}×</button>`).join('')}</div>
@@ -139,7 +141,7 @@ export function createFood(ctx) {
     }
     if (s.kind === 'swap') {
       const opts = swapOptions(s.slot), cur = weekPlan(N().weekOverrides)[s.day].meals.find(m => m.slot === s.slot);
-      return wrap(`${esc(DAY_NAMES[s.day].toUpperCase())} · ${esc(SLOT_LABEL[s.slot].toUpperCase())}`, 'Swap meal', `<div class="swap-list">${opts.map(r => `<button class="recipe-card ${cur.recipeId === r.id ? 'on' : ''}" data-action="food-swap-pick" data-id="${esc(r.id)}"><b>${esc(r.name)}</b><span class="small muted">${proteinText(r.nutritionApprox)} · ${r.timeMinutes} min ${cur.recipeId === r.id ? '· current' : ''}</span></button>`).join('')}</div>
+      return wrap(`${esc(DAY_NAMES[s.day].toUpperCase())} · ${esc(SLOT_LABEL[s.slot].toUpperCase())}`, 'Swap meal', `<div class="swap-list">${opts.map(r => `<button class="recipe-card swap-card ${cur.recipeId === r.id ? 'on' : ''}" data-action="food-swap-pick" data-id="${esc(r.id)}">${dishImg(r.id, 'swap-img')}<b>${esc(r.name)}</b><span class="small muted">${proteinText(r.nutritionApprox)} · ${r.timeMinutes} min ${cur.recipeId === r.id ? '· current' : ''}</span></button>`).join('')}</div>
         <button class="btn btn-subtle btn-block" style="margin-top:12px" data-action="food-swap-reset">Back to the example meal</button>`);
     }
     if (s.kind === 'log') {

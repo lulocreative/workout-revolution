@@ -120,3 +120,6 @@ html{-webkit-tap-highlight-color:transparent}
 /* Up next: see the next machine before you finish */
 .up-next{display:flex;gap:12px;align-items:center;margin-top:14px;padding:13px 16px;border-radius:16px;border:1px dashed #c9d4c4;background:#fafbf7;color:#4c5c50}.up-next>.icon{flex-shrink:0;color:var(--green)}.up-next div{display:grid;gap:1px;min-width:0}.up-next span{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}.up-next b{font-size:16px;color:var(--ink);letter-spacing:-.02em}.up-next small{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
 .up-next.ready{border:0;background:var(--lime);color:var(--ink)}.up-next.ready span,.up-next.ready>.icon{color:var(--ink)}.up-next.ready small{color:#3c4a3f}
+/* Focus areas: one colour, role shown as a tag */
+.progress-fill.week{background:#8fd14a}.progress-line-top strong{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.role-chip{font-size:9px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;border-radius:99px}.role-priority{background:var(--lime);color:var(--ink)}.role-supporting{background:#edf1e9;color:#5c6a60}.role-maintain{background:transparent;color:#7a867c;border:1px solid #d6ddd3}

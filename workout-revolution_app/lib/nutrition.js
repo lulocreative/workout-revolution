@@ -10,7 +10,7 @@ export const DAY_NAMES = NUTRITION.weeklyExample.map(d => d.day); // Monday … 
 export const COOKED_TO_RAW = 1.33; // rough estimate: cooked chicken weighs ~25% less than raw
 
 export function nutritionDefaults() {
-  return { version: 1, weekOverrides: {}, shoppingChecked: {}, shoppingWeek: null, people: 1, journal: [], body: [], sessionChoice: {}, myMeals: DEFAULT_MY_MEALS.map(m => JSON.parse(JSON.stringify(m))) };
+  return { version: 1, weekOverrides: {}, shoppingChecked: {}, shoppingWeek: null, people: 1, journal: [], body: [], sessionChoice: {}, myMeals: DEFAULT_MY_MEALS.map(m => JSON.parse(JSON.stringify(m))), supplements: DEFAULT_SUPPLEMENTS.map(x => ({ ...x })), suppLog: {} };
 }
 // Old backups (before Food existed) have no `nutrition`; merge defaults without touching anything else.
 export function migrateNutrition(n) {
@@ -24,6 +24,8 @@ export function migrateNutrition(n) {
     body: Array.isArray(n.body) ? n.body : [],
     sessionChoice: n.sessionChoice && typeof n.sessionChoice === 'object' ? n.sessionChoice : {},
     myMeals: Array.isArray(n.myMeals) ? n.myMeals : DEFAULT_MY_MEALS.map(m => JSON.parse(JSON.stringify(m))),
+    supplements: Array.isArray(n.supplements) ? n.supplements : DEFAULT_SUPPLEMENTS.map(x => ({ ...x })),
+    suppLog: n.suppLog && typeof n.suppLog === 'object' && !Array.isArray(n.suppLog) ? n.suppLog : {},
     people: [1, 2, 3, 4].includes(Number(n.people)) ? Number(n.people) : 1
   };
 }
@@ -213,6 +215,21 @@ export const DEFAULT_MY_MEALS = [
   { id: 'my-eggs-toast-avo', name: '3 eggs + toast + avocado', slot: 'breakfast', items: [{ foodId: 'egg', qty: 3 }, { foodId: 'toast', qty: 2 }, { foodId: 'avocado', qty: 1 }] },
   { id: 'my-canteen', name: 'Canteen lunch', slot: 'lunch', items: [{ foodId: 'c-protein', qty: 1.5 }, { foodId: 'potato', qty: 1 }, { foodId: 'veg', qty: 1 }] }
 ];
+// ---------- Daily supplements (a checklist, not food) ----------
+// Generic, label-first guidance. Doses follow the product label unless noted.
+export const DEFAULT_SUPPLEMENTS = [
+  { id: 'creatine', name: 'Creatine', dose: '3–5 g', why: 'Every day, rest days too. Timing does not matter; consistency does. Expect ~1 kg extra water weight on the scale in the first weeks: that is muscle water, not fat.' },
+  { id: 'omega3', name: 'Omega-3', dose: 'as on label', why: 'Take with a meal that has some fat (fewer fishy burps, better absorbed). On days with salmon or other oily fish it matters less.' },
+  { id: 'vitaepro', name: 'VitaePro', dose: 'as on label', why: 'Take with a meal, as the label says.' }
+];
+export function suppStreak(log = {}, id, date) {
+  let n = 0, d = new Date(`${date}T12:00:00Z`);
+  if (!(log[date] || []).includes(id)) d.setUTCDate(d.getUTCDate() - 1); // today not ticked yet doesn't break the streak
+  for (;;) { const k = d.toISOString().slice(0, 10); if (!(log[k] || []).includes(id)) return n; n++; d.setUTCDate(d.getUTCDate() - 1); }
+}
+export function suppWeek(log = {}, id, weekStartDate) {
+  return Array.from({ length: 7 }, (_, i) => { const d = new Date(`${weekStartDate}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + i); return (log[d.toISOString().slice(0, 10)] || []).includes(id); });
+}
 export function builtJournalEntry({ date, slot, items, name = '' }) {
   const m = mealFromItems(items);
   return { id: `meal-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, date, recipeId: null, name: String(name || '').trim() || m.name, category: slot, servings: 1, items: m.rows.map(r => ({ foodId: r.foodId, qty: r.qty })), nutrition: m.nutrition, source: 'built' };

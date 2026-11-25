@@ -56,6 +56,9 @@ The recipes are references. Day to day, use **Log a real meal** (Food → Today)
 - Live, calm feedback: protein vs the 30–45 g main-meal / 15–25 g snack aim, veg check, carbs on training days, a note on creamy/fried plates and regular dairy. All values are generic estimates.
 - Tick *Save to My meals* to reuse a plate later; remove saved meals in the Journal.
 
+### Supplements
+Food → Today has a daily checklist: **Creatine** (3–5 g, every day incl. rest days), **Omega-3** and **VitaePro** (as on the label, with a meal). One tap per day, a week strip and a streak. Add or remove your own (e.g. Vitamin D). **Protein shake** logs ≈ 25 g into today's protein. Ticks are saved in `nutrition.suppLog` and included in backups.
+
 ### Backups and older data
 All food data lives in `state.nutrition` in the same local storage and the same JSON backup as your workouts. `migrateState`/`prepareImport` in `lib/storage.js` add empty nutrition defaults to older backups and saved data **without changing** gym history, the active workout, photos or measurements. New exports include nutrition logs. Everything stays on the device; nothing is sent anywhere.
 

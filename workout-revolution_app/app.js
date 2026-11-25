@@ -17,7 +17,7 @@ const srcBadge=(s)=>s.source==='recorded'?'<span class="chip green">Recorded</sp
 const keyFor=(type,id)=>`${type}:${id}`;
 let state=loadState();
 // Food & Recovery module (food-view.js); it only reads/writes state.nutrition.
-const food=createFood({state:()=>state,persist:()=>persist(),render:()=>render(),toast:m=>toast(m),esc:v=>esc(v),ico:(n,s)=>ico(n,s),askConfirm:m=>askConfirm(m),header:(a,b,c)=>header(a,b,c),fmtDate:d=>fmtDate(d,{weekday:'short',day:'numeric',month:'short'}),today:()=>osloToday(),weekStart:()=>weekStart(),plannedToday:()=>plannedWorkout(state.history),workoutLabel:t=>PROGRAM[t]?.label||t,openSheet:()=>{modal='food';renderModal()},closeSheet:()=>{modal='';renderModal()}});
+const food=createFood({state:()=>state,persist:()=>persist(),render:()=>render(),toast:m=>toast(m),esc:v=>esc(v),ico:(n,s)=>ico(n,s),askConfirm:m=>askConfirm(m),askText:m=>askText(m),header:(a,b,c)=>header(a,b,c),fmtDate:d=>fmtDate(d,{weekday:'short',day:'numeric',month:'short'}),today:()=>osloToday(),weekStart:()=>weekStart(),plannedToday:()=>plannedWorkout(state.history),workoutLabel:t=>PROGRAM[t]?.label||t,openSheet:()=>{modal='food';renderModal()},closeSheet:()=>{modal='';renderModal()}});
 let view=state.view||'overview';
 let selectedPlan=null;
 let selectedMetric=state.selectedMetric||'incline-db|db-bench-30';
@@ -160,7 +160,7 @@ function renderModalCore(){const root=document.getElementById('modal-root');if(!
  const sincePush=daysSince(['push','focus']),sincePull=daysSince(['pull','focus']);const focusWarn=pendingStart==='focus'&&((sincePush!=null&&sincePush<2)||(sincePull!=null&&sincePull<2));
  root.innerHTML=`<div class="modal-backdrop" data-close-backdrop="1"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading"><div class="modal-title"><div><div class="eyebrow">BEFORE THE FIRST SET</div><h2 id="modal-heading">Ready for ${esc(type.label)}?</h2><p>Training advice should respond to recovery information, not persuasion.</p></div><button class="modal-close" data-action="close-modal" aria-label="Close dialog">${ico('x')}</button></div>
  <form id="readiness-form"><div class="readiness-meters">${meter('energy','energy',1,10,1,7,'Energy')}${meter('sleep','sleepHours',4,10,.5,7.5,'Sleep last night')}${meter('soreness-r','',0,2,1,0,'Muscle soreness')}<input type="hidden" name="soreness" id="soreness" value="none"/>
- <div class="meter"><div class="meter-top"><span class="meter-label">Food before training</span></div><div class="seg"><label><input type="radio" name="fuel" value="yes" checked/><span>Yes, eaten</span></label><label><input type="radio" name="fuel" value="no"/><span>Not yet</span></label></div></div></div>
+ ${meter('fuel-r','',0,2,1,2,'Food before training')}<input type="hidden" name="fuel" id="fuel" value="yes"/></div>
  <div class="set-actions" style="margin-top:18px"><label class="checkbox-line"><input name="dizzy" type="checkbox"/> Dizzy now</label><label class="checkbox-line"><input name="pain" type="checkbox"/> Pain now</label><label class="checkbox-line"><input name="faint" type="checkbox"/> Near-fainting</label><label class="checkbox-line"><input name="unusualFatigue" type="checkbox"/> Unusual fatigue</label></div>
  ${focusWarn?'<div class="readiness-result modified">Your last chest or biceps exposure may be under 48 hours ago. A fourth session should not repeat fatigued muscles.</div>':''}
  <div class="notice" style="margin-top:17px">${weekly} training sessions logged in the last 7 days. Plan: Mon Pull · Tue Push · Thu Legs · Sat Chest + Arms. Pain or active dizziness is a stop signal.</div>
@@ -226,6 +226,7 @@ function updateMeter(inp){const m=inp.closest('.meter');if(!m)return;const v=Num
  if(kind==='energy'){text=`${v}/10 · ${v<=2?'Very low':v<=4?'Low':v<=6?'OK':v<=8?'Good':'Great'}`;tone=v<=2?'bad':v<=5?'warn':'good'}
  else if(kind==='sleep'){text=`${v} h`;tone=v<6?'warn':'good'}
  else if(kind==='soreness-r'){const k=['none','mild','high'][v];text=['None','Mild','High'][v];tone=v===2?'bad':v===1?'warn':'good';const h=document.getElementById('soreness');if(h)h.value=k}
+ else if(kind==='fuel-r'){text=['Nothing yet','Snack','Proper meal'][v];tone=v===0?'warn':'good';const h=document.getElementById('fuel');if(h)h.value=v===0?'no':'yes'}
  bars.forEach((b,i)=>b.classList.toggle('on',i<=idx));m.dataset.tone=tone;const out=m.querySelector('output');if(out)out.textContent=text}
 document.addEventListener('input',ev=>{if(ev.target.matches?.('.meter input[type=range]'))updateMeter(ev.target);if(ev.target.dataset?.food)food.input(ev.target)});
 async function handleClick(ev){unlockAudio();{const b=ev.target.closest('[data-action^="food-"]');if(b)return food.click(b.dataset.action,b,ev)}const button=ev.target.closest('[data-action]');if(!button)return;const action=button.dataset.action;

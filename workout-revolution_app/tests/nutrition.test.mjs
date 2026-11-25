@@ -121,3 +121,18 @@ test('My meals default to the usual breakfasts and canteen lunch, and old data k
   assert.deepEqual(migrateNutrition({ myMeals: [] }).myMeals, []);
   assert.ok(DEFAULT_MY_MEALS.some(m => m.id === 'my-canteen'));
 });
+
+test('supplements: defaults, streaks, week dots and safe migration', async () => {
+  const { suppStreak, suppWeek, DEFAULT_SUPPLEMENTS, DAY_NAMES } = await import('../lib/nutrition.js');
+  assert.deepEqual(DEFAULT_SUPPLEMENTS.map(s => s.id), ['creatine', 'omega3', 'vitaepro']);
+  assert.equal(DAY_NAMES[0], 'Monday');
+  const log = { '2026-11-23': ['creatine'], '2026-11-24': ['creatine', 'omega3'], '2026-11-25': ['omega3'] };
+  assert.equal(suppStreak(log, 'creatine', '2026-11-25'), 2); // today not ticked yet: streak kept
+  assert.equal(suppStreak(log, 'omega3', '2026-11-25'), 2);
+  assert.equal(suppStreak(log, 'vitaepro', '2026-11-25'), 0);
+  assert.deepEqual(suppWeek(log, 'creatine', '2026-11-23'), [true, true, false, false, false, false, false]);
+  const m = migrateNutrition({ journal: [] });
+  assert.equal(m.supplements.length, 3); assert.deepEqual(m.suppLog, {});
+  assert.deepEqual(migrateNutrition({ supplements: [], suppLog: [] }).supplements, []);
+  assert.deepEqual(migrateNutrition({ suppLog: [] }).suppLog, {});
+});

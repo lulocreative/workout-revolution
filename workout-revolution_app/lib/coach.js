@@ -107,3 +107,26 @@ export function plannedWorkout(history = [], now = new Date(), plan = WEEK_PLAN)
   for (let i = 1; i <= 7; i++) { const d = (wd + i) % 7; if (plan[d]) return { type: plan[d], when: i === 1 ? 'tomorrow' : 'later', weekday: d, inDays: i, restToday: !plan[wd] }; }
   return { type: 'pull', when: 'later', weekday: 1, inDays: 0, restToday: false };
 }
+// Focus areas: planned working sets per week (from the weekly plan) vs sets logged since Monday.
+export const AREAS = [
+  { key: 'chest', label: 'Chest', groups: ['chest'], role: 'Priority' },
+  { key: 'arms', label: 'Biceps & forearms', groups: ['biceps', 'forearms'], role: 'Priority' },
+  { key: 'back', label: 'Back & traps', groups: ['back', 'traps'], role: 'Priority' },
+  { key: 'shoulders', label: 'Shoulders', groups: ['shoulders'], role: 'Supporting' },
+  { key: 'triceps', label: 'Triceps', groups: ['triceps'], role: 'Supporting' },
+  { key: 'legs', label: 'Legs', groups: ['quads', 'hamstrings', 'calves'], role: 'Maintain' }
+];
+export function weekStart(now = new Date()) {
+  const d = new Date(`${osloToday(now)}T12:00:00Z`);
+  return new Date(d.getTime() - ((d.getUTCDay() + 6) % 7) * 86400000).toISOString().slice(0, 10);
+}
+export function areaVolume(programs, plannedTypes, history = [], now = new Date()) {
+  const groupOf = {};
+  for (const p of Object.values(programs)) for (const e of [...(p.exercises || []), ...(p.bonus || [])]) groupOf[e.id] = e.groups;
+  const from = weekStart(now), to = osloToday(now);
+  return AREAS.map(a => {
+    const planned = plannedTypes.reduce((n, t) => n + (programs[t]?.exercises || []).filter(e => a.groups.includes(e.groups)).reduce((m, e) => m + e.sets.length, 0), 0);
+    const done = history.filter(s => s.date >= from && s.date <= to).reduce((n, s) => n + (s.exercises || []).filter(e => a.groups.includes(groupOf[e.exerciseId])).reduce((m, e) => m + actualSets(e.sets).length, 0), 0);
+    return { ...a, planned, done };
+  });
+}

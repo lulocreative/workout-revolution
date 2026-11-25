@@ -487,7 +487,7 @@ export const PROGRAM = {
   "label": "Legs",
   "short": "Quads / hamstrings / calves",
   "duration": "60–70 min",
-  "accent": "STRENGTH MAINTENANCE",
+  "accent": "LEG DEVELOPMENT",
   "exercises": [
    {
     "id": "leg-press",

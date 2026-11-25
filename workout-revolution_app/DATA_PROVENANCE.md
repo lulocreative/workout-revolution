@@ -47,3 +47,7 @@ The 20 images in `assets/technique/` were AI-generated with Higgsfield (gpt_imag
 ## Form videos
 
 Each exercise links one public YouTube form tutorial (`videoId` in `data/technique.js`), chosen on 23 Nov 2026 and checked to be public and embeddable via YouTube oEmbed. Videos are not stored in the app; they stream from youtube-nocookie.com only after the user taps play.
+
+## Food & Recovery data
+
+`data/nutrition.seed.json` (25 Nov 2026) holds recipes, portions, a 7-day example week and guidance prepared from the owner's older nutrition documents and stated preferences (lactose intolerance, familiar foods). All nutrition values are **planning estimates** from generalised ingredient references, not product labels or measured intake. The seed never creates journal entries: only meals the owner logs count as eaten, and unknown values (such as the flexible social dinner) stay `null`. The public GitHub Pages build removes the personal-history section and body-weight references from this file.

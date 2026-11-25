@@ -34,7 +34,7 @@ const publicProfile = {
 await rm(out, { recursive: true, force: true });
 await mkdir(join(out, 'data'), { recursive: true });
 
-for (const f of ['index.html', 'app.js', 'styles.css', 'sw.js', 'manifest.webmanifest']) {
+for (const f of ['index.html', 'app.js', 'food-view.js', 'styles.css', 'sw.js', 'manifest.webmanifest']) {
   await writeFile(join(out, f), scrub(await readFile(join(root, f), 'utf8')));
 }
 for (const d of ['lib', 'assets']) await cp(join(root, d), join(out, d), { recursive: true });
@@ -42,6 +42,14 @@ for (const f of await readdir(join(out, 'lib'))) {
   const p = join(out, 'lib', f); await writeFile(p, scrub(await readFile(p, 'utf8')));
 }
 await writeFile(join(out, 'data', 'technique.js'), scrub(await readFile(join(root, 'data', 'technique.js'), 'utf8')));
+// Nutrition seed: recipes and plan are fine to publish; the personal history (weight, health notes) is not.
+{
+  const { NUTRITION } = await import('../data/nutrition.js');
+  const pub = JSON.parse(JSON.stringify(NUTRITION));
+  pub.sourceProvenance = { confidence: pub.sourceProvenance?.confidence || '', corrections: pub.sourceProvenance?.corrections || [] };
+  if (pub.goal?.proteinTargetG) pub.goal.proteinTargetG.note = 'Flexible daily range consistent with the broad 1.4–2.0 g/kg sports-nutrition range for healthy exercising adults.';
+  await writeFile(join(out, 'data', 'nutrition.js'), `// Public build: personal history removed.\nexport const NUTRITION = ${JSON.stringify(pub)};\n`);
+}
 await writeFile(join(out, 'data', 'seed.js'),
   `// Public build: no personal data. Restore your JSON backup in Settings.\n` +
   `export const PROGRAM = ${scrub(JSON.stringify(PROGRAM, null, 1))};\n` +

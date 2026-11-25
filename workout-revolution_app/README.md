@@ -2,7 +2,7 @@
 
 **A personal, offline-first strength-training app built around actual workout history.**
 
-Designed for one real athlete, not a generic fitness template. The current program prioritizes chest, biceps, forearms and traps while maintaining strong legs. It keeps familiar movements and tracks the exact machine/setup so a different pulldown stack doesn't get treated as the same lift.
+Designed for one real athlete, not a generic fitness template. The current program prioritizes chest, biceps, forearms, traps and leg development. It keeps familiar movements and tracks the exact machine/setup so a different pulldown stack doesn't get treated as the same lift.
 
 ## Open this project in Codex
 

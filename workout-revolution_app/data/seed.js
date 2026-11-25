@@ -21,7 +21,7 @@ export const PROGRAM = {
     ex('hammer-db','Hammer DB curl','hammer-db','Standing · neutral grip dumbbells','per hand',2,[set(14,8,12,2,90),set(14,8,12,2,90)],'Thumbs up, elbows near ribs, no torso swing.','Forearm and brachialis priority; 14 × 12 reported previously.','biceps'),
     ex('reverse-curl','Reverse cable curl','reverse-low','Low cable · pronated EZ or straight bar','stack total',2,[set(23,12,15,2,75),set(23,12,15,2,75)],'Wrists straight, pronated grip, controlled lowering.','Forearm emphasis; 23 kg reported in earlier sessions.','forearms')
   ]},
-  legs: {label:'Legs',short:'Quads / hamstrings / calves',duration:'60–70 min',accent:'STRENGTH MAINTENANCE',exercises:[
+  legs: {label:'Legs',short:'Quads / hamstrings / calves',duration:'60–70 min',accent:'LEG DEVELOPMENT',exercises:[
     ex('leg-press','45° leg press','sled-45','45° sled · total loaded plates','total sled',10,[set(220,8,10,3,180),set(250,5,7,2,180),set(250,5,7,2,180)],'Controlled descent; back and hips against pad. Do not lock knees hard.','250 kg × 5 completed twice on 18 Nov. Next target 6 clean reps.','quads'),
     ex('lying-curl','Lying leg curl','lying-curl','Lying hamstring curl machine · NOT seated','stack total',5,[set(46,10,12,3,90),set(53,8,12,2,90),set(53,8,12,2,90)],'Hips stay down; control lowering.','01 Nov confirmed 46×12, 53×10, 53×8. Nov 18 loads partly reported, reps not verified.','hamstrings'),
     ex('leg-extension','Seated leg extension','seated-extension','Seated quad extension · straighten knees','stack total',5,[set(45,10,12,3,90),set(50,10,12,2,90),set(50,10,12,2,90)],'Smooth knee extension; no swing or hard lockout.','Not interchangeable with lying leg curls. We track these separately.','quads',{provisional:true}),

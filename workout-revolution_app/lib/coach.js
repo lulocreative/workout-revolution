@@ -114,7 +114,7 @@ export const AREAS = [
   { key: 'back', label: 'Back & traps', groups: ['back', 'traps'], role: 'Priority' },
   { key: 'shoulders', label: 'Shoulders', groups: ['shoulders'], role: 'Supporting' },
   { key: 'triceps', label: 'Triceps', groups: ['triceps'], role: 'Supporting' },
-  { key: 'legs', label: 'Legs', groups: ['quads', 'hamstrings', 'calves'], role: 'Maintain' }
+  { key: 'legs', label: 'Legs', groups: ['quads', 'hamstrings', 'calves'], role: 'Priority' }
 ];
 export function weekStart(now = new Date()) {
   const d = new Date(`${osloToday(now)}T12:00:00Z`);

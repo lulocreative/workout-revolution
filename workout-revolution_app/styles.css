@@ -166,3 +166,4 @@ html{-webkit-tap-highlight-color:transparent}
 .supp-tick{width:40px;height:40px;border-radius:12px;border:2px solid #cfd8cc;background:#fff;display:grid;place-items:center;color:var(--ink);cursor:pointer}.supp.on .supp-tick{background:var(--lime);border-color:var(--lime)}
 .supp-main{min-width:0;padding-top:2px}.supp-main b{font-size:15px}.supp-week{display:flex;align-items:center;gap:4px;margin-top:6px}.supp-week i{width:10px;height:10px;border-radius:3px;background:#e6ebe3}.supp-week i.y{background:#8fd14a}.supp-week span{margin-left:6px}
 .supp details{margin-top:6px}.supp summary{cursor:pointer;color:var(--muted)}.supp details p{margin-top:4px}
+.up-thumb{width:56px;height:56px;aspect-ratio:1/1;object-fit:cover;object-position:center;border-radius:12px;flex-shrink:0;background:#fff;border:1px solid #dfe6dc}.up-thumb-fallback{width:56px;height:56px;border-radius:12px;flex-shrink:0;background:#eef2ea}

@@ -221,9 +221,12 @@ function renderRestFull(){const remaining=state.active&&restUntil?Math.max(0,Mat
 let restArmedFor=0,restAlerted=false,audioCtx=null,wakeLock=null;
 function unlockAudio(){try{if(!audioCtx){const C=window.AudioContext||window.webkitAudioContext;if(!C)return;audioCtx=new C()}if(audioCtx.state==='suspended')audioCtx.resume();const o=audioCtx.createOscillator(),g=audioCtx.createGain();g.gain.value=0;o.connect(g).connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.01)}catch{}}
 function beep(){try{if(!audioCtx)return;const t0=audioCtx.currentTime;[0,.22,.44].forEach((d,i)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=i===2?1175:880;g.gain.setValueAtTime(0,t0+d);g.gain.linearRampToValueAtTime(.35,t0+d+.02);g.gain.exponentialRampToValueAtTime(.001,t0+d+.18);o.connect(g).connect(audioCtx.destination);o.start(t0+d);o.stop(t0+d+.2)})}catch{}}
+// When rest ends (or is skipped): open what comes next — the next set, or the next exercise once all sets are done.
+function goToNext(){const w=state.active,e=activeExercise();if(!w||w.halted||!e)return;const moved=e.sets.length>=e.targetSets.length&&!!w.exercises[w.currentIndex+1];if(moved)w.currentIndex++;view='train';persist();render();
+ requestAnimationFrame(()=>{if(moved)return window.scrollTo({top:0,behavior:'instant'});const f=document.getElementById('set-form')||document.querySelector('.up-next');f?.scrollIntoView({block:'center',behavior:'smooth'})})}
 function restDone(){const e=activeExercise();const next=!e?'Finish when ready':e.sets.length<e.targetSets.length?`Start set ${e.sets.length+1}`:'Move to the next exercise';if(state.restSound!==false)beep();try{navigator.vibrate?.([250,120,250])}catch{}
  let b=document.getElementById('rest-banner');if(!b){b=document.createElement('button');b.id='rest-banner';b.type='button';b.addEventListener('click',()=>b.classList.remove('show'));document.body.append(b)}
- b.innerHTML=`<b>Rest done</b><span>${esc(next)}${e?` · ${esc(e.name)}`:''}</span>`;b.classList.add('show');clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('show'),8000)}
+ goToNext();b.innerHTML=`<b>Rest done</b><span>${esc(next)}${e?` · ${esc(e.name)}`:''}</span>`;b.classList.add('show');clearTimeout(b._t);b._t=setTimeout(()=>b.classList.remove('show'),8000)}
 function syncWakeLock(){if(!('wakeLock' in navigator))return;if(state.active&&document.visibilityState==='visible'){if(!wakeLock)navigator.wakeLock.request('screen').then(l=>{wakeLock=l;l.addEventListener('release',()=>{wakeLock=null})}).catch(()=>{})}else if(wakeLock){wakeLock.release().catch(()=>{});wakeLock=null}}
 document.addEventListener('visibilitychange',()=>{syncWakeLock();tickRest()});
 let tickHandle=setInterval(tickRest,1000);
@@ -268,7 +271,7 @@ async function handleClick(ev){unlockAudio();{const b=ev.target.closest('[data-a
  if(action==='clear-video'){if(state.videoLinks)delete state.videoLinks[button.dataset.id];persist();render();return toast('Saved video removed.')}
  if(action==='rest-min'){restMin=true;return tickRest()}
  if(action==='rest-max'){restMin=false;return tickRest()}
- if(action==='rest-skip'){restUntil=0;if(state.active)state.active.restUntil=0;persist();return tickRest()}
+ if(action==='rest-skip'){restUntil=0;if(state.active)state.active.restUntil=0;persist();tickRest();return goToNext()}
  if(action==='rest-add'){if(!restUntil)return;restUntil=Math.max(Date.now()+1000,restUntil+Number(button.dataset.s)*1000);restArmedFor=restUntil;restTotal=Math.max(restTotal,Math.ceil((restUntil-Date.now())/1000));if(state.active)state.active.restUntil=restUntil;persist();return tickRest()}
  if(action==='rest-control'){if(button.dataset.remaining && Number(button.dataset.remaining)>0){restUntil=0;if(state.active)state.active.restUntil=0}else{const secs=activeExercise()?.targetSets[Math.min(activeExercise()?.sets.length||0,(activeExercise()?.targetSets.length||1)-1)]?.rest||90;restUntil=Date.now()+secs*1000;if(state.active)state.active.restUntil=restUntil}persist();return tickRest()}
  if(action==='next-exercise'){if(state.active.halted){toast('Symptom recorded. End the session and address it first.');return}state.active.currentIndex++;persist();render();window.scrollTo({top:0,behavior:'instant'});return}

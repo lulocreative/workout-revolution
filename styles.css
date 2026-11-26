@@ -182,3 +182,4 @@ html{-webkit-tap-highlight-color:transparent}
 .rest-display[data-action]{cursor:pointer}
 @media (prefers-reduced-motion:reduce){.rf-prog{transition:none}}
 .rest-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.rest-expand{color:#fff;border-color:#536457;gap:6px}.rest-expand[hidden]{display:none}
+.swap-box{max-width:480px}.swap-list{display:grid;gap:8px;margin-top:12px;max-height:55vh;overflow:auto}.swap-list button{display:flex;gap:12px;align-items:center;text-align:left;border:1px solid var(--line);background:#fafbf7;border-radius:14px;padding:10px;font:inherit;color:inherit;cursor:pointer}.swap-list button:active{background:#eef4e2}.swap-list img{width:48px;height:48px;border-radius:10px;object-fit:cover;background:#fff;flex-shrink:0}.swap-list span{display:grid;gap:2px;min-width:0}.swap-list small{font-size:12px;color:var(--muted)}

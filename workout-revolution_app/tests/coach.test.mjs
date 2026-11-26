@@ -56,3 +56,9 @@ import {areaVolume} from '../lib/coach.js';
 test('focus areas: planned weekly sets from the plan, done = sets logged since Monday',()=>{const v=areaVolume(PROGRAM,['pull','push','legs','focus'],[{date:'2026-11-23',exercises:[{exerciseId:'lat-pd',sets:[{weight:60,reps:10},{weight:60,reps:10}]},{exerciseId:'hammer-db',sets:[{weight:14,reps:10}]}]},{date:'2026-11-20',exercises:[{exerciseId:'incline-db',sets:[{weight:22.5,reps:8}]}]}],new Date('2026-11-25T10:00:00Z'));const by=Object.fromEntries(v.map(a=>[a.key,a]));
  assert.equal(by.chest.planned,10);assert.equal(by.arms.planned,12);assert.equal(by.back.planned,11);assert.equal(by.legs.planned,12);
  assert.equal(by.back.done,2);assert.equal(by.arms.done,1);assert.equal(by.chest.done,0);assert.equal(by.legs.role,'Priority')});
+
+test('weights accept decimal comma and dot; junk is unknown, not zero', async () => {
+  const { toNumber } = await import('../lib/coach.js');
+  assert.equal(toNumber('22,5'), 22.5); assert.equal(toNumber('22.5'), 22.5); assert.equal(toNumber(' 47,25 '), 47.25);
+  assert.equal(toNumber(''), null); assert.equal(toNumber('abc'), null); assert.equal(toNumber(0), 0);
+});

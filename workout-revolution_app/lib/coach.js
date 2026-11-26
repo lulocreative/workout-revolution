@@ -1,5 +1,6 @@
 // Evidence-based, intentionally conservative rules. All loads in kg.
-export const toNumber = (value) => value === '' || value == null ? null : Number(value);
+// Accepts '22.5' and the Norwegian/European '22,5'. Empty or unreadable -> null (never 0).
+export const toNumber = (value) => { if (value === '' || value == null) return null; const n = Number(String(value).trim().replace(',', '.')); return Number.isFinite(n) ? n : null; };
 export const roundTo = (value, step = 2.5) => Math.round(value / step) * step;
 export const lastValidSet = (rows = []) => [...rows].reverse().find(s => Number.isFinite(Number(s.reps)) && Number(s.reps) > 0 && Number.isFinite(Number(s.weight)) && s.weight !== null && s.weight !== '') || null;
 export const actualSets = (rows = []) => rows.filter(s => Number(s.reps) > 0 && s.weight !== '' && s.weight != null && Number.isFinite(Number(s.weight)));

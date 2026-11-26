@@ -1,4 +1,4 @@
-const CACHE='workout-revolution-v2.27.1';
+const CACHE='workout-revolution-v2.27.2';
 const FILES=['./','./index.html','./styles.css','./app.js','./data/seed.js','./data/technique.js','./data/nutrition.js','./lib/nutrition.js','./food-view.js','./lib/ai.js','./lib/coach.js','./lib/storage.js','./manifest.webmanifest','./assets/icon-192.png','./assets/icon-512.png','./assets/apple-touch-icon.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES)));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});

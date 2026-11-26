@@ -181,3 +181,4 @@ html{-webkit-tap-highlight-color:transparent}
 .rf-actions{display:grid;grid-template-columns:1fr 1.4fr;gap:10px;margin-top:auto;max-width:520px;width:100%;margin-left:auto;margin-right:auto}.rf-actions .btn{height:56px;justify-content:center}.rf-actions .btn-ghost{color:#fff;border-color:#3a4a3f}
 .rest-display[data-action]{cursor:pointer}
 @media (prefers-reduced-motion:reduce){.rf-prog{transition:none}}
+.rest-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.rest-expand{color:#fff;border-color:#536457;gap:6px}.rest-expand[hidden]{display:none}
